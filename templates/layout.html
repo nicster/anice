@@ -1,3 +1,4 @@
+{% import 'macros.html' as macro with context %}
 <!doctype html>
 <html>
 <head>
@@ -11,11 +12,6 @@
     <script>
         $(document).ready(function() {
             draw_cubic({{ site }});
-            $(".navigator").click(function() {
-                $(".navigator").removeClass("active_link");
-                $(this).addClass("active_link");
-                return true;
-            });
         });
     </script>
 
@@ -23,17 +19,19 @@
 
     <div class="page">
         <header>
-            <canvas id="cubic" width="130" height="130"></canvas>
-            <h1>ANICE GROSSENBACHER</h1>
+            <a href="{{ url_for("index") }}">
+                <canvas id="cubic" width="130" height="130"></canvas>
+                <h1>ANICE GROSSENBACHER</h1>
+            </a>
         </header>
        
         <div class="navigation">
-            <a href="{{ url_for("portfolio")}}" class="navigator">PORTFOLIO</a>
-            <a href="{{ url_for("work")}}" class="navigator">WORK</a>
-            <a href="{{ url_for("sketches")}}" class="navigator">SKETCHES</a>
-            <a href="{{ url_for("blog")}}" class="navigator">BLOG</a>
-            <a href="{{ url_for("about")}}" class="navigator">ABOUT</a>
-            <a href="{{ url_for("contact")}}" class="navigator">CONTACT</a>
+            {{ macro.nav_link('portfolio', 'PORTFOLIO', 'red') }}
+            {{ macro.nav_link('work', 'WORK', 'blue') }}
+            {{ macro.nav_link('sketches', 'SKETCHES', 'yellow') }}
+            {{ macro.nav_link('blog', 'BLOG', 'pink') }}
+            {{ macro.nav_link('about', 'ABOUT', 'brown') }}
+            {{ macro.nav_link('contact', 'CONTACT', 'black') }}
         </div>
 
         {% block body %}

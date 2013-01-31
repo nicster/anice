@@ -5,12 +5,29 @@
 
 body           { font-family: 'Univers', san-serif; }
 header         { text-align: center; margin-top: 30px;}
-h1             { margin-top: 0px; font-size: 27px; font-weight: normal;}
+h1             { margin-top: 0px; font-size: 27px; font-weight: normal; color: #000;}
+a              { text-decoration: none; }
 
 .page          { margin: auto; width: 800px; height: 800px; }
 .navigation    { font-size: 19px; width: 800px; border-bottom: 1px solid #000; padding-bottom: 6px;  
                 padding-top: 25px;}
-.navigation a  { margin-right: 74px; text-decoration: none; color: #000;}
+.navigation a  { margin-right: 74px; color: #000;}
 .navigation a:last-child { margin-right: 0px; margin-left: 3px;}
 
-.active_link   { text-decoration: line-through; font-size: 40px; }
+.active_link   { text-decoration: line-through; }
+.active_link.red { color: rgba(234, 0, 1, 0.7);}
+.active_link.blue { color: rgba(132, 206, 208, 0.7);}
+.active_link.yellow { color: rgba(255, 236, 71, 0.7);}
+.active_link.pink { color: rgba(247, 171, 202, 0.7);}
+.active_link.brown { color: rgba(236, 214, 193, 0.7);}
+.active_link.black { color: rgba(73, 72, 72, 0.7);}
+
+#loginform     { margin: 200px auto; width: 350px; font-size: 30px;}
+#loginform input { height: 30px; width: 200px; font-size: 25px;}
+#username input { background-color: #CBC9C9; border: none; }
+#password      {margin-top: 10px;}
+#password input { margin-left: 3px; background-color: #CBC9C9; border: none;}
+#loginform #loginbutton {width: 60px; background-color: #CBC9C9; margin-top: 10px;
+                height: 40px; padding-left: 0px; border-color: #CBC9C9; font-size: 20px;
+                border-style: solid;}
+

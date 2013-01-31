@@ -77,5 +77,4 @@ function draw_cubic(k) {
     cxt.lineTo(cds[3][0], cds[3][1]);
     cxt.closePath();
     cxt.stroke();
-
 }

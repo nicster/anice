@@ -1,10 +1,13 @@
 #all the imports
-from flask import Flask, render_template
+from flask import Flask, render_template, request, flash, session, redirect, \
+url_for
 from flask.ext.assets import Environment
 
 #configuration
 DEBUG = True
 SECRET_KEY = 'anice'
+USERNAME = 'admin'
+PASSWORD = 'anice'
 
 #create application
 app = Flask(__name__)
@@ -45,6 +48,21 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html', site=5)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != app.config['USERNAME']:
+            error = 'Invalid username'
+        elif request.form['password'] != app.config['PASSWORD']:
+            error = 'Invalid password'
+        else:
+            session['logged_in'] = True
+            flash('You successfully logged in')
+            return redirect(url_for('work'))
+    return render_template('login.html', error=error)
 
 
 if __name__ == '__main__':
