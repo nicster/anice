@@ -16,6 +16,7 @@ assets = Environment(app)
 def index():
     return render_template('layout.html')
 
+<<<<<<< HEAD
 
 @app.route('/portfolio')
 def portfolio():
@@ -46,5 +47,7 @@ def about():
 def contact():
     return render_template('contact.html', site=5)
 
+=======
+>>>>>>> 5ce2fe2eb53f54476459ff7374d4a85664804f25
 if __name__ == '__main__':
     app.run()
