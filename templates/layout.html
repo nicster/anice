@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Anice Grossenbacher</title>
+    <title>ANICE GROSSENBACHER</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <script src="/static/jquery-1.9.0.min.js"></script>
     <script type="text/javascript" src="/static/cubics.js"></script>
@@ -9,19 +9,32 @@
 
 <body>
     <script>
-        $(function() {
+        $(document).ready(function() {
             draw_cubic({{ site }});
+            $(".navigator").click(function() {
+                $(".navigator").removeClass("active_link");
+                $(this).addClass("active_link");
+                return true;
+            });
         });
     </script>
+
+
+
     <div class="page">
-        <canvas id="cubic" width="130" height="130"></canvas>
-        <h1>Anice Grossenbacher</h1>
-        <a href="{{ url_for("portfolio")}}" class="navigator">PORTFOLIO</a>
-        <a href="{{ url_for("work")}}" class="navigator">WORK</a>
-        <a href="{{ url_for("sketches")}}" class="navigator">SKETCHES</a>
-        <a href="{{ url_for("blog")}}" class="navigator">BLOG</a>
-        <a href="{{ url_for("about")}}" class="navigator">ABOUT</a>
-        <a href="{{ url_for("contact")}}" class="navigator">CONTACT</a>
+        <header>
+            <canvas id="cubic" width="130" height="130"></canvas>
+            <h1>ANICE GROSSENBACHER</h1>
+        </header>
+       
+        <div class="navigation">
+            <a href="{{ url_for("portfolio")}}" class="navigator">PORTFOLIO</a>
+            <a href="{{ url_for("work")}}" class="navigator">WORK</a>
+            <a href="{{ url_for("sketches")}}" class="navigator">SKETCHES</a>
+            <a href="{{ url_for("blog")}}" class="navigator">BLOG</a>
+            <a href="{{ url_for("about")}}" class="navigator">ABOUT</a>
+            <a href="{{ url_for("contact")}}" class="navigator">CONTACT</a>
+        </div>
 
         {% block body %}
 

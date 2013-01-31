@@ -1,4 +1,16 @@
-body           { font-family: Arial; }
-canvas         { margin-top: 30px; margin-left: 30px; border: 1px solid #000; }
+@font-face {
+    font-family: 'Univers';
+    src: url(font/UniversLTStdCn.otf);
+}
 
-.page          { margin: auto; width: 50em; border: 5px solid #000;}
+body           { font-family: 'Univers', san-serif; }
+header         { text-align: center; margin-top: 30px;}
+h1             { margin-top: 0px; font-size: 27px; font-weight: normal;}
+
+.page          { margin: auto; width: 800px; height: 800px; }
+.navigation    { font-size: 19px; width: 800px; border-bottom: 1px solid #000; padding-bottom: 6px;  
+                padding-top: 25px;}
+.navigation a  { margin-right: 74px; text-decoration: none; color: #000;}
+.navigation a:last-child { margin-right: 0px; margin-left: 3px;}
+
+.active_link   { text-decoration: line-through; font-size: 40px; }
