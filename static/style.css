@@ -5,14 +5,26 @@
 
 body           { font-family: 'Univers', san-serif; }
 header         { text-align: center; margin-top: 30px;}
-h1             { margin-top: 0px; font-size: 27px; font-weight: normal; color: #000;}
+h4             { margin-bottom: 5px; margin-top: 30px; font-size: 17px;}
 a              { text-decoration: none; }
+hr             { width: 20px; border-color: #000; display: inline-block;
+                margin-top: 10px; margin-bottom: 13px;}
 
-.page          { margin: auto; width: 800px; height: 800px; }
+#header-left   { position: relative; text-align: left; color: #000; left: -120px;
+                top: -135px;}
+#header-left h1 { font-size: 21px; font-weight: bold; margin: 0;}
+#header-left span { font-size: 19px;}
+.page          { margin: auto; width: 800px; border-bottom: 1px solid #000; 
+                padding-bottom: 60px;}
 .navigation    { font-size: 19px; width: 800px; border-bottom: 1px solid #000; padding-bottom: 6px;  
                 padding-top: 25px;}
 .navigation a  { margin-right: 74px; color: #000;}
 .navigation a:last-child { margin-right: 0px; margin-left: 3px;}
+.content span  { display: block; margin-bottom: 5px;}
+.content span:last-child { margin-top: 40px;}
+.content a     { color: #000;}
+#copyright     { color: rgba(73, 72, 72, 0.7); position: relative; left: -120px; 
+                top: 76px; font-size: 14px;}
 
 .active_link   { text-decoration: line-through; }
 .active_link.red { color: rgba(234, 0, 1, 0.7);}
@@ -30,4 +42,6 @@ a              { text-decoration: none; }
 #loginform #loginbutton {width: 60px; background-color: #CBC9C9; margin-top: 10px;
                 height: 40px; padding-left: 0px; border-color: #CBC9C9; font-size: 20px;
                 border-style: solid;}
+
+#contact-last  { margin-top: 30px; }
 
