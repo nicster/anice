@@ -5,3 +5,47 @@
         <a href="{{ url_for(endpoint) }}">{{ name }}</a> 
     {%- endif -%} 
 {% endmacro %}
+
+{% macro show_painting(painting, logged_in=false) -%}
+	<div class=image_container image_id={{ painting.id }} sort_id=image_{{ painting.id }}>
+		<li><h2>{{ painting.title }}</h2>
+		<a class=show_description_link image_id={{ painting.id }}><img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" /></a>
+		{% if logged_in == true %}
+		<button class=edit_painting_button image_id={{ painting.id }} />
+		<button class=delete_painting_button image_id={{ painting.id }} />
+		{% endif %}
+	</div>
+{%- endmacro %}
+
+{% macro edit_painting(painting, form) -%}
+	<div class=edit_painting_div image_id={{ painting.id }}>
+	<form enctype=multipart/form-data>
+		<div>{{ form.hidden_id(value=painting.id) }}
+		<div>{{ form.title.label }} {{ form.title(value=painting.title) }}</div>
+		<div>{{ form.description.label }} {{ form.description(value=painting.description) }}</div>
+		<div>{{ form.filename.label }} {{ form.filename }}</div>
+		<div><img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" /></div>
+		<div>{{ form.submit(class='edit_painting') }}</div>
+	</div>
+{%- endmacro %}
+
+{% macro show_post(post, logged_in=false) -%}
+	<div class=post_container post_id={{ post.id }} sort_id=post_{{ post.id }}>
+		<li><h2>{{ post.title }}</h2>
+		<p>{{ post.text }}</p>
+		{% if logged_in == true %}
+		<button class=edit_post_button post_id={{ post.id }} />
+		<button class=delete_post_button post_id={{ post.id }} />
+		{% endif %}
+	</div>
+{%- endmacro %}
+
+{% macro edit_post(post, form) -%}
+	<div class=edit_post_div post_id={{ post.id }}>
+	<form>
+		<div>{{ form.hidden_id(value=post.id) }}
+		<div>{{ form.title.label }} {{ form.title(value=post.title) }}</div>
+		<div>{{ form.text.label }} {{ form.text(value=post.text) }}</div>
+		<div>{{ form.submit(class='edit_post') }}</div>
+	</div>
+{%- endmacro %}

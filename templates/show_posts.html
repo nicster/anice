@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% import 'macros.html' as macros %}
+{% block body %}
+	{% if session.logged_in %}
+		<div id=add_post_div style='display:none'>
+			<form id=add_post_form>
+				<div>{{ form.title.label }} {{ form.title }}</div>
+				<div>{{ form.text.label }} {{ form.text }}</div>
+				<div>{{ form.submit(class='submit_post') }}</div>
+				<div>{{ form.hidden_id() }}</div>
+			</form>
+		</div>
+		<p id=add_post_button>Add Post</p>
+	{% endif %}
+	<ul id=posts>
+	{% for post in posts %}
+		{{ macros.show_post(post, session.logged_in) }}
+	{% else %}
+		<li><em>Unbelievable. No entries so far</em>
+	{% endfor %}
+	</ul>
+{% endblock %}
