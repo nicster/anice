@@ -55,27 +55,27 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	padding:0px;
 }
 .delete_painting_button {
-	background: url('img/Cancel_b') no-repeat;
+	background: url('img/Cancel_b.png') no-repeat;
 	opacity:0.5;
 }
 .edit_painting_button {
-	background: url('img/Write_b') no-repeat;
+	background: url('img/Write_b.png') no-repeat;
 	opacity:0.5;
 }
 #add_painting_button {
-	background: url('img/Plus_b') no-repeat;
+	background: url('img/Plus_b.png') no-repeat;
 	opacity:0.5;
 }
 .delete_post_button {
-	background: url('img/Cancel_b') no-repeat;
+	background: url('img/Cancel_b.png') no-repeat;
 	opacity:0.5;
 }
 .edit_post_button {
-	background: url('img/Write_b') no-repeat;
+	background: url('img/Write_b.png') no-repeat;
 	opacity:0.5;
 }
 #add_post_button {
-	background: url('img/Plus_b') no-repeat;
+	background: url('img/Plus_b.png') no-repeat;
 	opacity:0.5;
 }
 
