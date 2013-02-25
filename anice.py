@@ -204,6 +204,9 @@ class Painting(Base):
         os.remove('static/' + self.my_thumbnail_path())
 
 
+Base.metadata.create_all(engine)
+
+
 @app.before_request
 def before_request():
     print request.base_url
@@ -363,6 +366,3 @@ def revert_changes(former_url):
 
 if __name__ == '__main__':
     app.run()
-
-
-Base.metadata.create_all(engine)
