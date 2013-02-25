@@ -1,8 +1,8 @@
 #all the imports
+from __future__ import with_statement
 from flask import Flask, render_template, request, flash, session, redirect, \
     url_for, jsonify, make_response
 from flask.ext.assets import Environment
-from __future__ import with_statement
 from PIL import Image
 import os
 import re
