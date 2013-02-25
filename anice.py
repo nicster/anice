@@ -2,7 +2,6 @@
 from __future__ import with_statement
 from flask import Flask, render_template, request, flash, session, redirect, \
     url_for, jsonify, make_response
-from flask.ext.assets import Environment
 from PIL import Image
 import os
 import re
@@ -31,7 +30,6 @@ joined = '|'.join(ALLOWED_EXTENSIONS)
 #create application
 app = Flask(__name__)
 app.config.from_object(__name__)
-assets = Environment(app)
 
 
 Base = declarative_base()
