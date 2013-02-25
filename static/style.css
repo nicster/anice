@@ -45,3 +45,74 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 
 #contact-last  { margin-top: 30px; }
 
+
+
+.button_div_1 {
+	height:16px;
+	width:16px;
+	position:absolute;
+	margin:0px;
+	padding:0px;
+}
+.delete_painting_button {
+	background: url('img/Cancel_b') no-repeat;
+	opacity:0.5;
+}
+.edit_painting_button {
+	background: url('img/Write_b') no-repeat;
+	opacity:0.5;
+}
+#add_painting_button {
+	background: url('img/Plus_b') no-repeat;
+	opacity:0.5;
+}
+.delete_post_button {
+	background: url('img/Cancel_b') no-repeat;
+	opacity:0.5;
+}
+.edit_post_button {
+	background: url('img/Write_b') no-repeat;
+	opacity:0.5;
+}
+#add_post_button {
+	background: url('img/Plus_b') no-repeat;
+	opacity:0.5;
+}
+
+.delete_painting_button:hover {
+	opacity: 1;
+}
+.edit_painting_button:hover {
+	opacity: 1;
+}
+#add_painting_button:hover {
+	opacity: 1;
+}
+.delete_post_button:hover {
+	opacity: 1;
+}
+.edit_post_button:hover {
+	opacity: 1;
+}
+#add_post_button:hover {
+	opacity: 1;
+}
+/*
+.delete_painting_button:hover {
+	background: url('img/Cancel_d') no-repeat;
+}
+.edit_painting_button:hover {
+	background: url('img/Write_d') no-repeat;
+}
+#add_painting_button:hover {
+	background: url('img/Plus_d') no-repeat;
+}
+.delete_post_button:hover {
+	background: url('img/Cancel_d') no-repeat;
+}
+.edit_post_button:hover {
+	background: url('img/Write_d') no-repeat;
+}
+#add_post_button:hover {
+	background: url('img/Plus_d') no-repeat;
+}*/

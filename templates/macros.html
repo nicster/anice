@@ -11,8 +11,8 @@
 		<li><h2>{{ painting.title }}</h2>
 		<a class=show_description_link image_id={{ painting.id }}><img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" /></a>
 		{% if logged_in == true %}
-		<button class=edit_painting_button image_id={{ painting.id }} />
-		<button class=delete_painting_button image_id={{ painting.id }} />
+		<div class='edit_painting_button button_div_1' image_id={{ painting.id }}></div>
+		<div class='delete_painting_button button_div_1' image_id={{ painting.id }}></div>
 		{% endif %}
 	</div>
 {%- endmacro %}
@@ -34,8 +34,8 @@
 		<li><h2>{{ post.title }}</h2>
 		<p>{{ post.text }}</p>
 		{% if logged_in == true %}
-		<button class=edit_post_button post_id={{ post.id }} />
-		<button class=delete_post_button post_id={{ post.id }} />
+		<div class='edit_post_button button_div_1' post_id={{ post.id }}></div>
+		<div class='delete_post_button button_div_1' post_id={{ post.id }}></div>
 		{% endif %}
 	</div>
 {%- endmacro %}
