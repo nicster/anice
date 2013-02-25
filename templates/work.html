@@ -1,4 +1,25 @@
 {% extends "layout.html" %}
+{% import 'macros.html' as macros %}
 {% block body %}
-    <span>work</span>
+<span>work</span>
+	{% if session.logged_in %}
+		<div id=add_painting_div style='display:none' enctype=multipart/form-data>
+			<form id=add_painting_form>
+				<div>{{ form.title.label }} {{ form.title }}</div>
+				<div>{{ form.filename.label }} {{ form.filename }}</div>
+				<div>{{ form.description.label }} {{ form.description }}</div>
+				<div>{{ form.submit(class='submit_painting') }}</div>
+				<div>{{ form.hidden_id() }}</div>
+			</form>
+		</div>
+		<p id=add_painting_button>Add Painting</p>
+	{% endif %}
+	<ul id=paintings>
+	{% for painting in paintings %}
+		{{ macros.show_painting(painting, session.logged_in) }}
+	{% else %}
+		<li><em>Unbelievable. No entries so far</em>
+	{% endfor %}
+	</ul>
 {% endblock %}
+
