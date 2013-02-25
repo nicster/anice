@@ -23,6 +23,9 @@ THUMBNAIL_SIZE = 128, 128
 IMAGE_FOLDER = 'uploads'
 THUMBNAIL_FOLDER = 'uploads/thumbnails'
 ALLOWED_EXTENSIONS = set(['jpg', 'png', 'jpeg', 'gif'])
+TYPE_OF_WORK = 'work'
+TYPE_OF_PORTFOLIO = 'portfolio'
+TYPE_OF_SKETCHES = 'sketches'
 joined = '|'.join(ALLOWED_EXTENSIONS)
 
 #create application
@@ -45,27 +48,38 @@ ses = Session()
 
 @app.route('/')
 def index():
-    return render_template('layout.html')
+    return redirect(url_for('work'))
 
 
 @app.route('/portfolio')
 def portfolio():
-    return render_template('portfolio.html', site=0)
+    session['type_of'] = TYPE_OF_PORTFOLIO
+    form = Painting_Form(request.form)
+    paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).order_by(Painting.position.asc()).all()
+    return render_template('portfolio.html', site=0, form=form, paintings=paintings)
 
 
 @app.route('/work')
 def work():
-    return render_template('work.html', site=1)
+    session['type_of'] = TYPE_OF_WORK
+    form = Painting_Form(request.form)
+    paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).order_by(Painting.position.asc()).all()
+    return render_template('work.html', site=1, form=form, paintings=paintings)
 
 
 @app.route('/sketches')
 def sketches():
-    return render_template('sketches.html', site=2)
+    session['type_of'] = TYPE_OF_SKETCHES
+    form = Painting_Form(request.form)
+    paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).order_by(Painting.position.asc()).all()
+    return render_template('sketches.html', site=2, form=form, paintings=paintings)
 
 
 @app.route('/blog')
 def blog():
-    return render_template('blog.html', site=3)
+    form = Post_Form(request.form)
+    posts = ses.query(Post).all()
+    return render_template('blog.html', site=3, form=form, posts=posts)
 
 
 @app.route('/about')
@@ -118,6 +132,7 @@ class Painting_Form(Form):
     def validate_painting(form, field):
         if field.data:
             field.data = secure_filename(re.sub(r'[^()a-z0-9_.-]', '_', str(field.data).lower()))
+            field.data = session['type_of'] + field.data
             validators.regexp(r'^[^/\\]\.%s$' % joined)
             if os.path.exists(os.path.join('static/', IMAGE_FOLDER, field.data)):
                 raise ValidationError('This file exists already!')
@@ -137,10 +152,12 @@ class Post(Base):
     date = Column(DateTime)
     title = Column(String, nullable=False)
     text = Column(String, nullable=False)
+    type_of = Column(String)
 
     def __init__(self, title, text):
         self.title = title
         self.text = text
+        self.type_of = session['type_of']
 
 
 class Painting(Base):
@@ -152,11 +169,13 @@ class Painting(Base):
     description = Column(String, nullable=False)
     filename = Column(String, nullable=False)
     position = Column(Integer)
+    type_of = Column(String)
 
     def __init__(self, title, description, filename):
         self.title = title
         self.description = description
         self.filename = filename
+        self.type_of = session['type_of']
         max_position = ses.query(func.max(Painting.position)).one()[0]
         if not max_position:
             max_position = 0
@@ -191,18 +210,6 @@ def before_request():
     logged_in = request.cookies.get('logged_in')
     if logged_in and not session.get('logged_in'):
         session['logged_in'] = True
-
-
-@app.route('/')
-def show_entries():
-    return redirect(url_for('show_paintings'))
-
-
-@app.route('/show_paintings')
-def show_paintings():
-    form = Painting_Form(request.form)
-    paintings = ses.query(Painting).order_by(Painting.position.asc()).all()
-    return render_template('show_paintings.html', form=form, paintings=paintings)
 
 
 @app.route('/ajax/add_painting', methods=['GET', 'POST'])
@@ -272,7 +279,7 @@ def update_paintings_order():
             sorted_items.update({item: counter})
             counter = counter + 1
         print sorted_items
-        paintings = ses.query(Painting).all()
+        paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).all()
         for painting in paintings:
             painting.position = sorted_items.get(painting.id)
         ses.flush()
@@ -293,13 +300,6 @@ def get_description():
 
 
 """blog"""
-
-
-@app.route('/show_posts')
-def show_posts():
-    form = Post_Form(request.form)
-    posts = ses.query(Post).all()
-    return render_template('show_posts.html', form=form, posts=posts)
 
 
 @app.route('/ajax/add_post', methods=['GET', 'POST'])
