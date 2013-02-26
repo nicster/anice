@@ -8,8 +8,7 @@
 
 {% macro show_painting(painting, logged_in=false) -%}
 	<div class=image_container image_id={{ painting.id }} sort_id=image_{{ painting.id }}>
-		<li><h2>{{ painting.title }}</h2>
-		<a class=show_description_link image_id={{ painting.id }}><img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" /></a>
+		<a class=show_description_link image_id={{ painting.id }}><img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" alt={{ painting.title }} /></a>
 		{% if logged_in == true %}
 		<div class='edit_painting_button button_div_1' image_id={{ painting.id }}></div>
 		<div class='delete_painting_button button_div_1' image_id={{ painting.id }}></div>

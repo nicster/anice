@@ -18,7 +18,7 @@ DEBUG = True
 SECRET_KEY = 'anice'
 USERNAME = 'admin'
 PASSWORD = 'anice'
-THUMBNAIL_SIZE = 128, 128
+THUMBNAIL_SIZE = 200, 200
 IMAGE_FOLDER = 'uploads'
 THUMBNAIL_FOLDER = 'uploads/thumbnails'
 ALLOWED_EXTENSIONS = set(['jpg', 'png', 'jpeg', 'gif'])
@@ -127,7 +127,7 @@ class Painting_Form(Form):
     submit = SubmitField('Upload')
     hidden_id = HiddenField()
 
-    def validate_painting(form, field):
+    def validate_filename(form, field):
         if field.data:
             field.data = secure_filename(re.sub(r'[^()a-z0-9_.-]', '_', str(field.data).lower()))
             field.data = session['type_of'] + field.data
@@ -192,10 +192,18 @@ class Painting(Base):
         self.create_thumbnail()
 
     def create_thumbnail(self):
-        im = Image.open('static/' + self.my_path())
-        im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
-        print url_for('static', filename=self.my_thumbnail_path())
-        im.save('static/' + self.my_thumbnail_path())
+        try:
+            im = Image.open('static/' + self.my_path())
+            height, width = im.size
+            maximum = max(height, width)
+            info = im.info
+            if maximum > THUMBNAIL_SIZE[1]:
+                print 'blubbi'
+                im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
+            print url_for('static', filename=self.my_thumbnail_path())
+            im.save('static/' + self.my_thumbnail_path(), **info)
+        except Exception, e:
+            raise e
 
     def delete_uploads(self):
         os.remove('static/' + self.my_path())
@@ -215,18 +223,21 @@ def before_request():
 
 @app.route('/ajax/add_painting', methods=['GET', 'POST'])
 def add_painting():
-    form = Painting_Form(request.values)
-    form.filename.process_data(request.files['filename'].filename)
-    print request.script_root + '/macros.html'
-    if form.validate():
-        painting = Painting(form.title.data, form.description.data, form.filename.data)
-        painting.upload(request.files['filename'])
-        ses.add(painting)
-        ses.flush()
-        return jsonify(status='success', \
-            content=render_template('ajax/add_painting.html', painting=painting))
-    else:
-        return jsonify(status='error', content=JSONEncoder().encode(form.errors)), 500
+    try:
+        form = Painting_Form(request.values)
+        form.filename.process_data(request.files['filename'].filename)
+        print request.script_root + '/macros.html'
+        if form.validate():
+            painting = Painting(form.title.data, form.description.data, form.filename.data)
+            painting.upload(request.files['filename'])
+            ses.add(painting)
+            ses.flush()
+            return jsonify(status='success', \
+                content=render_template('ajax/add_painting.html', painting=painting))
+        else:
+            return jsonify(status='error', content=JSONEncoder().encode(form.errors)), 500
+    except Exception, e:
+        raise e
 
 
 @app.route('/ajax/editing_form', methods=['GET', 'POST'])

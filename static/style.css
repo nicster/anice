@@ -48,8 +48,8 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 
 
 .button_div_1 {
-	height:16px;
-	width:16px;
+	height:24px;
+	width:24px;
 	position:absolute;
 	margin:0px;
 	padding:0px;
@@ -62,7 +62,7 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	background: url('img/Write_b.png') no-repeat;
 	opacity:0.5;
 }
-#add_painting_button {
+.add_painting_button {
 	background: url('img/Plus_b.png') no-repeat;
 	opacity:0.5;
 }
@@ -74,7 +74,7 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	background: url('img/Write_b.png') no-repeat;
 	opacity:0.5;
 }
-#add_post_button {
+.add_post_button {
 	background: url('img/Plus_b.png') no-repeat;
 	opacity:0.5;
 }
@@ -85,7 +85,7 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 .edit_painting_button:hover {
 	opacity: 1;
 }
-#add_painting_button:hover {
+.add_painting_button:hover {
 	opacity: 1;
 }
 .delete_post_button:hover {
@@ -94,7 +94,7 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 .edit_post_button:hover {
 	opacity: 1;
 }
-#add_post_button:hover {
+.add_post_button:hover {
 	opacity: 1;
 }
 /*

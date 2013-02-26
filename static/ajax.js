@@ -57,7 +57,7 @@ $(function(){
 	        //timeout:   3000 
 
 
-		$('body').on('click', '#add_painting_button', function(){
+		$('body').on('click', '.add_painting_button', function(){
 			console.log('add_painting_button was pressed');
 			add_painting_dialog = $('#add_painting_div').clone();
 			add_painting_dialog.dialog(
@@ -150,7 +150,7 @@ $(function(){
 			dataType: 'json'
 		};
 
-		$('body').on('click', '#add_post_button', function(){
+		$('body').on('click', '.add_post_button', function(){
 			console.log('add_post_button was pressed');
 			add_post_dialog = $('#add_post_div').clone();
 			add_post_dialog.dialog(
