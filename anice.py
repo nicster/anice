@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, flash, session, redirect, \
 from PIL import Image
 import os
 import re
+import json
 from json import JSONEncoder
 from sqlite3 import dbapi2 as sqlite
 from werkzeug import secure_filename
@@ -12,6 +13,7 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from wtforms import Form, TextField, validators, FileField, SubmitField, HiddenField, ValidationError
+
 
 #configuration
 DEBUG = True
@@ -39,6 +41,8 @@ engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)
 Session = sessionmaker(bind=engine)
 
 ses = Session()
+
+editing = False
 
 
 """engine = create_engine('mysql+mysqldb://root:blubbi@localhost/flaskr', pool_recycle=3600)"""
@@ -128,12 +132,14 @@ class Painting_Form(Form):
     hidden_id = HiddenField()
 
     def validate_filename(form, field):
-        if field.data:
+        if field.data and not session['editing'] == 'True':
+            print 'blubberer'
+            print editing
             field.data = secure_filename(re.sub(r'[^()a-z0-9_.-]', '_', str(field.data).lower()))
             field.data = session['type_of'] + field.data
             validators.regexp(r'^[^/\\]\.%s$' % joined)
             if os.path.exists(os.path.join('static/', IMAGE_FOLDER, field.data)):
-                raise ValidationError('This file exists already!')
+                ValidationError('This file exists already!')
 
 
 class Post_Form(Form):
@@ -187,23 +193,18 @@ class Painting(Base):
         return THUMBNAIL_FOLDER + '/' + self.filename
 
     def upload(self, file):
-        print url_for('static', filename=self.my_path())
         file.save('static/' + self.my_path())
         self.create_thumbnail()
 
     def create_thumbnail(self):
-        try:
-            im = Image.open('static/' + self.my_path())
-            height, width = im.size
-            maximum = max(height, width)
-            info = im.info
-            if maximum > THUMBNAIL_SIZE[1]:
-                print 'blubbi'
-                im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
-            print url_for('static', filename=self.my_thumbnail_path())
-            im.save('static/' + self.my_thumbnail_path(), **info)
-        except Exception, e:
-            raise e
+        im = Image.open('static/' + self.my_path())
+        height, width = im.size
+        maximum = max(height, width)
+        info = im.info
+        if maximum > THUMBNAIL_SIZE[1]:
+            im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
+        print 'blubbi'
+        im.save('static/' + self.my_thumbnail_path(), **info)
 
     def delete_uploads(self):
         os.remove('static/' + self.my_path())
@@ -225,9 +226,14 @@ def before_request():
 def add_painting():
     try:
         form = Painting_Form(request.values)
-        form.filename.process_data(request.files['filename'].filename)
+        print 'blubbi'
+        if request.files.get('filename'):
+            form.filename.process_data(request.files['filename'].filename)
+        print 'blubbi'
         print request.script_root + '/macros.html'
+        print 'blubbi'
         if form.validate():
+            print 'blubbi'
             painting = Painting(form.title.data, form.description.data, form.filename.data)
             painting.upload(request.files['filename'])
             ses.add(painting)
@@ -235,39 +241,51 @@ def add_painting():
             return jsonify(status='success', \
                 content=render_template('ajax/add_painting.html', painting=painting))
         else:
-            return jsonify(status='error', content=JSONEncoder().encode(form.errors)), 500
+            print 'blubbi'
+            blubbi = str(json.dumps(form.errors))
+            print blubbi
+            return jsonify(status='error', spec='form', content=json.dumps(form.errors))
     except Exception, e:
-        raise e
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/ajax/editing_form', methods=['GET', 'POST'])
 def editing_form():
-    form = Painting_Form()
-    painting = ses.query(Painting).filter(Painting.id == int(request.form['image_id'])).one()
-    return jsonify(status='success', \
-            content=render_template('ajax/editing_form.html', painting=painting, form=form))
+    try:
+        form = Painting_Form()
+        painting = ses.query(Painting).filter(Painting.id == int(request.form['image_id'])).one()
+        return jsonify(status='success', \
+                content=render_template('ajax/editing_form.html', painting=painting, form=form))
+    except Exception, e:
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/ajax/edit_painting', methods=['GET', 'POST'])
 def edit_painting():
-    painting = ses.query(Painting).filter(Painting.id == int(request.values['hidden_id'])).one()
-    form = Painting_Form(request.values, obj=painting)
-    if request.files.get('filename'):
-        form.filename.process_data(request.files['filename'].filename)
-    else:
-        form.filename.process_data(painting.filename)
-    if request.method == 'POST' and form.validate():
-        print form.filename.data
-        form.populate_obj(painting)
+    try:
+        session['editing'] = 'True'
+        print session['editing']
+        painting = ses.query(Painting).filter(Painting.id == int(request.values['hidden_id'])).one()
+        form = Painting_Form(request.values, obj=painting)
         if request.files.get('filename'):
-            painting.upload(request.files['filename'])
-        ses.flush()
-        return jsonify(status='success', \
-            content=render_template('ajax/edit_painting.html', painting=painting), \
-            image_id=painting.id)
-    else:
-        return jsonify(status='error', \
-            content=form.errors), 500
+            form.filename.process_data(request.files['filename'].filename)
+        else:
+            form.filename.process_data(painting.filename)
+        if request.method == 'POST' and form.validate():
+            form.populate_obj(painting)
+            if request.files.get('filename'):
+                painting.upload(request.files['filename'])
+            ses.flush()
+            session['editing'] = 'False'
+            return jsonify(status='success', \
+                content=render_template('ajax/edit_painting.html', painting=painting), \
+                image_id=painting.id)
+        else:
+            session['editing'] = 'False'
+            return jsonify(status='error', spec='form', content=JSONEncoder().encode(form.errors))
+    except Exception, e:
+        session['editing'] = 'False'
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/ajax/delete_painting', methods=['POST'])
@@ -278,7 +296,7 @@ def delete_painting():
         ses.flush()
         return jsonify(status='success', image_id=painting.id)
     except Exception, e:
-        return jsonify(status='error', content=e), 500
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/ajax/update_paintings_order', methods=['POST'])
@@ -290,14 +308,13 @@ def update_paintings_order():
         for item in sort_list:
             sorted_items.update({item: counter})
             counter = counter + 1
-        print sorted_items
         paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).all()
         for painting in paintings:
             painting.position = sorted_items.get(painting.id)
         ses.flush()
         return jsonify(status='success')
     except Exception, e:
-        raise e
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/ajax/get_description', methods=['POST'])
@@ -308,7 +325,7 @@ def get_description():
             status='success', \
             content=painting.description)
     except Exception, e:
-        raise e
+        return jsonify(status='error', content=e.message)
 
 
 """blog"""
@@ -316,38 +333,46 @@ def get_description():
 
 @app.route('/ajax/add_post', methods=['GET', 'POST'])
 def add_post():
-    form = Post_Form(request.values)
-    if form.validate():
-        post = Post(form.title.data, form.text.data)
-        ses.add(post)
-        ses.flush()
-        return jsonify(status='success', \
-            content=render_template('ajax/add_post.html', post=post))
-    else:
-        return jsonify(status='error', content=JSONEncoder().encode(form.errors)), 500
+    try:
+        form = Post_Form(request.values)
+        if form.validate():
+            post = Post(form.title.data, form.text.data)
+            ses.add(post)
+            ses.flush()
+            return jsonify(status='success', \
+                content=render_template('ajax/add_post.html', post=post))
+        else:
+            return jsonify(status='error', content=json.dumps(form.errors))
+    except Exception, e:
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/ajax/editing_post_form', methods=['GET', 'POST'])
 def editing_post_form():
-    form = Post_Form()
-    post = ses.query(Post).filter(Post.id == int(request.form['post_id'])).one()
-    return jsonify(status='success', \
+    try:
+        form = Post_Form()
+        post = ses.query(Post).filter(Post.id == int(request.form['post_id'])).one()
+        return jsonify(status='success', \
             content=render_template('ajax/editing_post_form.html', post=post, form=form))
+    except Exception, e:
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/ajax/edit_post', methods=['GET', 'POST'])
 def edit_post():
-    post = ses.query(Post).filter(Post.id == int(request.values['hidden_id'])).one()
-    form = Post_Form(request.values, obj=post)
-    if request.method == 'POST' and form.validate():
-        form.populate_obj(post)
-        ses.flush()
-        return jsonify(status='success', \
-            content=render_template('ajax/edit_post.html', post=post), \
-            post_id=post.id)
-    else:
-        return jsonify(status='error', \
-            content=form.errors), 500
+    try:
+        post = ses.query(Post).filter(Post.id == int(request.values['hidden_id'])).one()
+        form = Post_Form(request.values, obj=post)
+        if request.method == 'POST' and form.validate():
+            form.populate_obj(post)
+            ses.flush()
+            return jsonify(status='success',
+                content=render_template('ajax/edit_post.html', post=post),
+                post_id=post.id)
+        else:
+            return jsonify(status='error', spec='form', content=json.dumps(form.errors))
+    except Exception, e:
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/ajax/delete_post', methods=['POST'])
@@ -358,7 +383,7 @@ def delete_post():
         ses.flush()
         return jsonify(status='success', post_id=post.id)
     except Exception, e:
-        return jsonify(status='error', content=e), 500
+        return jsonify(status='error', content=e.message)
 
 
 @app.route('/submit_changes/<path:former_url>', methods=['POST', 'GET'])

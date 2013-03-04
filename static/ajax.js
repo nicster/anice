@@ -1,3 +1,7 @@
+function close_dialogs(){
+	$('.future_dialog').dialog('close');
+}
+
 $(function(){
 
 	if ($LOGGED_IN == 'True'){
@@ -9,12 +13,12 @@ $(function(){
 			beforeSubmit: function(formData, jqForm, options){
 				var queryString = $.param(formData);
 				console.log('About to submit: ' + queryString);
-	        },
-	        success: function(responseText, statusText, xhr, $form){
+			},
+			success: function(responseText, statusText, xhr, $form){
 				console.log(responseText);
 				$('#paintings').append(responseText.content);
 				add_painting_dialog.dialog('close');
-	        },
+			},
 			url: $SCRIPT_ROOT + '/ajax/add_painting',
 			type: 'post',
 			dataType: 'json'
@@ -25,11 +29,11 @@ $(function(){
 				var queryString = $.param(formData);
 				console.log('About to submit: ' + queryString);
 			},
-	        success: function(responseText, statusText, xhr, $form){
+			success: function(responseText, statusText, xhr, $form){
 				var painting_to_edit = $('.image_container[image_id=' + responseText.image_id + ']');
 				painting_to_edit.replaceWith(responseText.content);
 				edit_painting_dialog.dialog('close');
-	        },
+			},
 			url: $SCRIPT_ROOT + '/ajax/edit_painting',
 			type: 'post',
 			dataType: 'json'
@@ -51,19 +55,21 @@ $(function(){
 		};
 
 		$('#paintings').sortable(sort_paintings);
-	        // other available options: 
-	        //clearForm: true        // clear all form fields after successful submit 
-	        //resetForm: true        // reset the form after successful submit 
-	        //timeout:   3000 
+			// other available options: 
+			//clearForm: true        // clear all form fields after successful submit 
+			//resetForm: true        // reset the form after successful submit 
+			//timeout:   3000 
 
 
 		$('body').on('click', '.add_painting_button', function(){
+			close_dialogs();
 			console.log('add_painting_button was pressed');
-			add_painting_dialog = $('#add_painting_div').clone();
+			add_painting_dialog = $('.add_painting_div').clone();
+			add_painting_dialog.addClass('future_dialog');
 			add_painting_dialog.dialog(
 				{
 					create: function(){
-						$('#add_painting_div form').ajaxForm(add_painting_options);
+						$('.add_painting_div form').ajaxForm(add_painting_options);
 					},
 					modal: true,
 					close: function(){
@@ -74,10 +80,11 @@ $(function(){
 						opacity: 0.5
 					}
 				});
-			$('#add_painting_div').attr('display', 'block');
+			$('.add_painting_div').attr('display', 'block');
 		});
 
 		$('body').on('click', '.delete_painting_button', function(){
+			close_dialogs();
 			var id = $(this).attr('image_id');
 			$.ajax({
 				type: 'POST',
@@ -92,6 +99,7 @@ $(function(){
 		});
 
 		$('body').on('click', '.edit_painting_button', function(){
+			close_dialogs();
 			var id = $(this).attr('image_id');
 			$.ajax({
 				type: 'POST',
@@ -106,6 +114,7 @@ $(function(){
 					}
 				};
 				edit_painting_dialog = $('.edit_painting_div[image_id=' + id + ']');
+				edit_painting_dialog.addClass('future_dialog');
 				edit_painting_dialog.dialog(editing_form_options);
 				$('.edit_painting_div form').ajaxForm(edit_painting_options);
 			}).fail(function(error){
@@ -123,12 +132,12 @@ $(function(){
 			beforeSubmit: function(formData, jqForm, options){
 				var queryString = $.param(formData);
 				console.log('About to submit: ' + queryString);
-	        },
-	        success: function(responseText, statusText, xhr, $form){
+			},
+			success: function(responseText, statusText, xhr, $form){
 				console.log(responseText);
 				$('#posts').append(responseText.content);
 				add_post_dialog.dialog('close');
-	        },
+			},
 			url: $SCRIPT_ROOT + '/ajax/add_post',
 			type: 'post',
 			dataType: 'json'
@@ -139,25 +148,27 @@ $(function(){
 				var queryString = $.param(formData);
 				console.log('About to submit: ' + queryString);
 			},
-	        success: function(responseText, statusText, xhr, $form){
+			success: function(responseText, statusText, xhr, $form){
 				console.log(responseText);
 				var post_to_edit = $('.post_container[post_id=' + responseText.post_id + ']');
 				post_to_edit.replaceWith(responseText.content);
 				edit_post_dialog.dialog('close');
-	        },
+			},
 			url: $SCRIPT_ROOT + '/ajax/edit_post',
 			type: 'post',
 			dataType: 'json'
 		};
 
 		$('body').on('click', '.add_post_button', function(){
+			close_dialogs();
 			console.log('add_post_button was pressed');
-			add_post_dialog = $('#add_post_div').clone();
+			add_post_dialog = $('.add_post_div').clone();
+			add_post_dialog.addClass('future_dialog');
 			add_post_dialog.dialog(
 				{
 					modal: true,
 					create: function(){
-						$('#add_post_div form').ajaxForm(add_post_options);
+						$('.add_post_div form').ajaxForm(add_post_options);
 					},
 					close: function(){
 						$(this).remove();
@@ -167,12 +178,13 @@ $(function(){
 						opacity: 0.5
 					}
 				});
-			$('#add_post_div').attr('display', 'block');
+			$('.add_post_div').attr('display', 'block');
 		});
 
-		$('#add_post_div form').ajaxForm(add_post_options);
+		$('.add_post_div form').ajaxForm(add_post_options);
 
 		$('body').on('click', '.edit_post_button', function(){
+			close_dialogs();
 			var id = $(this).attr('post_id');
 			console.log(id);
 			$.ajax({
@@ -188,6 +200,7 @@ $(function(){
 					}
 				};
 				edit_post_dialog = $('.edit_post_div[post_id=' + id + ']');
+				edit_post_dialog.addClass('future_dialog');
 				edit_post_dialog.dialog(editing_post_form_options);
 				$('.edit_post_div form').ajaxForm(edit_post_options);
 			}).fail(function(error){
@@ -196,7 +209,7 @@ $(function(){
 		});
 
 		$('body').on('click', '.delete_post_button',  function(){
-			console.log('haaaaaalo');
+			close_dialogs();
 			var id = $(this).attr('post_id');
 			$.ajax({
 				type: 'POST',

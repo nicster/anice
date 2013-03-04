@@ -57,10 +57,14 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 .delete_painting_button {
 	background: url('img/Cancel_b.png') no-repeat;
 	opacity:0.5;
+	right:10px;
+	top:10px;
 }
 .edit_painting_button {
 	background: url('img/Write_b.png') no-repeat;
 	opacity:0.5;
+	right:35px;
+	top:10px;
 }
 .add_painting_button {
 	background: url('img/Plus_b.png') no-repeat;
@@ -97,7 +101,24 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 .add_post_button:hover {
 	opacity: 1;
 }
+
+.image_container {
+	position:relative;
+	height:210px;
+	width:210px;
+	background-repeat: no-repeat;
+	background-position: center;
+	padding: 2px;
+	border: 1px solid black;
+}
+
+.image_container img {
+	text-align:center;
+	margin:auto auto;
+}
 /*
+
+<img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" alt={{ painting.title }} />
 .delete_painting_button:hover {
 	background: url('img/Cancel_d') no-repeat;
 }

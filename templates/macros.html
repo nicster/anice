@@ -7,17 +7,17 @@
 {% endmacro %}
 
 {% macro show_painting(painting, logged_in=false) -%}
-	<div class=image_container image_id={{ painting.id }} sort_id=image_{{ painting.id }}>
-		<a class=show_description_link image_id={{ painting.id }}><img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" alt={{ painting.title }} /></a>
+	<div class=image_container image_id={{ painting.id }} sort_id=image_{{ painting.id }} style="background-image:url({{ url_for('static', filename=painting.my_thumbnail_path()) }});">
+		<a class=show_description_link image_id={{ painting.id }}></a>
 		{% if logged_in == true %}
-		<div class='edit_painting_button button_div_1' image_id={{ painting.id }}></div>
-		<div class='delete_painting_button button_div_1' image_id={{ painting.id }}></div>
+		<div class='edit_painting_button button_div_1 close_dialogs' image_id={{ painting.id }}></div>
+		<div class='delete_painting_button button_div_1 _close_dialogs' image_id={{ painting.id }}></div>
 		{% endif %}
 	</div>
 {%- endmacro %}
 
 {% macro edit_painting(painting, form) -%}
-	<div class=edit_painting_div image_id={{ painting.id }}>
+	<div class="edit_painting_div" image_id={{ painting.id }}>
 	<form enctype=multipart/form-data>
 		<div>{{ form.hidden_id(value=painting.id) }}
 		<div>{{ form.title.label }} {{ form.title(value=painting.title) }}</div>
@@ -33,14 +33,14 @@
 		<li><h2>{{ post.title }}</h2>
 		<p>{{ post.text }}</p>
 		{% if logged_in == true %}
-		<div class='edit_post_button button_div_1' post_id={{ post.id }}></div>
-		<div class='delete_post_button button_div_1' post_id={{ post.id }}></div>
+		<div class='edit_post_button button_div_1 close_dialogs' post_id={{ post.id }}></div>
+		<div class='delete_post_button button_div_1 close_dialogs' post_id={{ post.id }}></div>
 		{% endif %}
 	</div>
 {%- endmacro %}
 
 {% macro edit_post(post, form) -%}
-	<div class=edit_post_div post_id={{ post.id }}>
+	<div class="edit_post_div" post_id={{ post.id }}>
 	<form>
 		<div>{{ form.hidden_id(value=post.id) }}
 		<div>{{ form.title.label }} {{ form.title(value=post.title) }}</div>

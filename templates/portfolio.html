@@ -3,7 +3,7 @@
 {% block body %}
 <span>portfolio</span>
 	{% if session.logged_in %}
-		<div id=add_painting_div style='display:none' enctype=multipart/form-data>
+		<div class="add_painting_div" style='display:none' enctype=multipart/form-data>
 			<form id=add_painting_form>
 				<div>{{ form.title.label }} {{ form.title }}</div>
 				<div>{{ form.filename.label }} {{ form.filename }}</div>
@@ -12,7 +12,7 @@
 				<div>{{ form.hidden_id() }}</div>
 			</form>
 		</div>
-		<div class='add_painting_button button_div_1'></div>
+		<div class='add_painting_button button_div_1 close_dialogs'></div>
 	{% endif %}
 	<ul id=paintings>
 	{% for painting in paintings %}
