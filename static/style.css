@@ -114,11 +114,46 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	position:relative;
 }
 
+.image_container a {
+	display:block;
+	opacity:0;
+	width:210px;
+	height:180px;
+	text-align:center;
+	padding-top:30px;
+}
+
+.overlay {
+	height:210px;
+	width:210px;
+	background-color:white;
+	opacity:0;
+}
+
+.overlay:hover {
+	opacity:0.65;
+}
+
+.overlay:hover a {
+	opacity:1;
+}
+
 #paintings {
 	overflow: hidden;
 	list-style-type: none;
 	padding:0px;
 }
+
+#main {
+	position:relative;
+}
+
+#description_container {
+	position:absolute;
+	left:-120px;
+	width:120px;
+}
+
 /*
 
 <img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" alt={{ painting.title }} />

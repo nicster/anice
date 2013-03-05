@@ -55,11 +55,12 @@
         <div class=flash>{{ message }}</div>
     {% endfor %}
 
+    <div id="main">
+<div id="description_container">haaallo</div>
         {% block body %}
 
         {% endblock %}
-
-        <div id=description_container></div>
+    </div>
 
         {% if session.logged_in %}
         <a href="{{ url_for('submit_changes', former_url=request.url) }}">submit</a>

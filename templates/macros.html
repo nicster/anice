@@ -8,10 +8,13 @@
 
 {% macro show_painting(painting, logged_in=false) -%}
 	<li class="image_container" image_id="{{ painting.id }}" sort_id="image_{{ painting.id }}" style="background-image:url({{ url_for('static', filename=painting.my_thumbnail_path()) }});">
-		<a class=show_description_link image_id={{ painting.id }}></a>
 		{% if logged_in == true %}
 		<div class='edit_painting_button button_div_1 close_dialogs' image_id={{ painting.id }}></div>
 		<div class='delete_painting_button button_div_1 _close_dialogs' image_id={{ painting.id }}></div>
+		{% else %}
+		<div class="overlay">
+		<a class=show_description_link image_id={{ painting.id }}>blubbi</a>
+	</div>
 		{% endif %}
 	</li>
 {%- endmacro %}
