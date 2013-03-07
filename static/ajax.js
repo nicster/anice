@@ -2,7 +2,22 @@ function close_dialogs(){
 	$('.future_dialog').dialog('close');
 }
 
+function show_form_errors(form_errors){
+	form_errors = $.parseJSON(form_errors);
+	for (var key in form_errors) {
+		console.log(key);
+		console.log(form_errors[key]);
+		$('label[for='+key+']').after('<span style="color:red;"> '+form_errors[key]+'</span>');
+	}
+}
+
 $(function(){
+
+	var dialog_width = 500;
+
+	$('body').on('click', '.ui-widget-overlay', function(){
+		close_dialogs();
+	});
 
 	if ($LOGGED_IN == 'True'){
 		var add_painting_dialog;
@@ -16,8 +31,18 @@ $(function(){
 			},
 			success: function(responseText, statusText, xhr, $form){
 				console.log(responseText);
-				$('#paintings').append(responseText.content);
-				add_painting_dialog.dialog('close');
+				if (responseText.status == "error"){
+					if (responseText.spec == "form"){
+						show_form_errors(responseText.content);
+					}
+					else{
+						show_message(responseText.content, true);
+					}
+				}
+				else {
+					$('#paintings').append(responseText.content);
+					add_painting_dialog.dialog('close');
+				}
 			},
 			url: $SCRIPT_ROOT + '/ajax/add_painting',
 			type: 'post',
@@ -30,9 +55,14 @@ $(function(){
 				console.log('About to submit: ' + queryString);
 			},
 			success: function(responseText, statusText, xhr, $form){
-				var painting_to_edit = $('.image_container[image_id=' + responseText.image_id + ']');
-				painting_to_edit.replaceWith(responseText.content);
-				edit_painting_dialog.dialog('close');
+				if (responseText.status == "error"){
+					show_message(responseText.content, true);
+				}
+				else {
+					var painting_to_edit = $('.image_container[image_id=' + responseText.image_id + ']');
+					painting_to_edit.replaceWith(responseText.content);
+					edit_painting_dialog.dialog('close');
+				}
 			},
 			url: $SCRIPT_ROOT + '/ajax/edit_painting',
 			type: 'post',
@@ -47,7 +77,9 @@ $(function(){
 					url: $SCRIPT_ROOT + '/ajax/update_paintings_order',
 					data: order
 				}).done(function(response){
-					console.log(response);
+					if (responseText.status == "error"){
+						show_message(responseText.content, true);
+					}
 				}).fail(function(error){
 					show_message(error, true);
 			});
@@ -68,6 +100,10 @@ $(function(){
 			add_painting_dialog.addClass('future_dialog');
 			add_painting_dialog.dialog(
 				{
+					dialogClass: 'no-close',
+					width: dialog_width,
+					draggable: false,
+					resizable: false,
 					create: function(){
 						$('.add_painting_div form').ajaxForm(add_painting_options);
 					},
@@ -109,6 +145,11 @@ $(function(){
 				console.log(response);
 				$('body').append(response.content);
 				var editing_form_options = {
+					dialogClass: 'no-close',
+					width: dialog_width,
+					draggable: false,
+					resizable: false,
+					modal: true,
 					close: function(event, ui){
 						$('.edit_painting_div[image_id=' + id + ']').remove();
 					}
@@ -135,8 +176,13 @@ $(function(){
 			},
 			success: function(responseText, statusText, xhr, $form){
 				console.log(responseText);
-				$('#posts').append(responseText.content);
-				add_post_dialog.dialog('close');
+				if (responseText.status == "error"){
+					show_message(responseText.content, true);
+				}
+				else {
+					$('#posts').append(responseText.content);
+					add_post_dialog.dialog('close');
+				}
 			},
 			url: $SCRIPT_ROOT + '/ajax/add_post',
 			type: 'post',
@@ -150,9 +196,14 @@ $(function(){
 			},
 			success: function(responseText, statusText, xhr, $form){
 				console.log(responseText);
-				var post_to_edit = $('.post_container[post_id=' + responseText.post_id + ']');
-				post_to_edit.replaceWith(responseText.content);
-				edit_post_dialog.dialog('close');
+				if (responseText.status == "error"){
+					show_message(responseText.content, true);
+				}
+				else {
+					var post_to_edit = $('.post_container[post_id=' + responseText.post_id + ']');
+					post_to_edit.replaceWith(responseText.content);
+					edit_post_dialog.dialog('close');
+				}
 			},
 			url: $SCRIPT_ROOT + '/ajax/edit_post',
 			type: 'post',
@@ -166,6 +217,10 @@ $(function(){
 			add_post_dialog.addClass('future_dialog');
 			add_post_dialog.dialog(
 				{
+					width: dialog_width,
+					dialogClass: 'no-close',
+					draggable: false,
+					resizable: false,
 					modal: true,
 					create: function(){
 						$('.add_post_div form').ajaxForm(add_post_options);
@@ -195,6 +250,10 @@ $(function(){
 				console.log(response);
 				$('body').append(response.content);
 				var editing_post_form_options = {
+					width: dialog_width,
+					dialogClass: 'no-close',
+					draggable: false,
+					resizable: false,
 					close: function(event, ui){
 						$('.edit_post_div[post_id=' + id + ']').remove();
 					}

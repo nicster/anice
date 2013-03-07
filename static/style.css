@@ -69,6 +69,8 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 .add_painting_button {
 	background: url('img/Plus_b.png') no-repeat;
 	opacity:0.5;
+	bottom:0px;
+	left:50%;
 }
 .delete_post_button {
 	background: url('img/Cancel_b.png') no-repeat;
@@ -144,8 +146,13 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	padding:0px;
 }
 
-#main {
+#wrapper {
 	position:relative;
+}
+
+#main {
+	height:500px;
+	overflow:hidden;
 }
 
 #description_container {
@@ -153,6 +160,44 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	left:-120px;
 	width:120px;
 }
+
+.ui-dialog {
+	background:white;
+	padding: 10px;
+	border-radius:8px;
+}
+
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
+
+.ui-widget-overlay { 
+	position: fixed; 
+	background: gray;
+	opacity: 0.5;
+	top: 0; 
+	left: 0; 
+	width: 100%; 
+	height: 100%; 
+}
+
+form div {
+	margin-bottom: 10px;
+}
+
+.ui-dialog input[type='text'], .ui-dialog textarea  {
+	width: 493px;
+}
+
+.ui-dialog textarea {
+	height:100px;
+}
+
+.ui-dialog input[type='submit'] {
+	text-align:center;
+	margin:0px auto;
+}
+
 
 /*
 

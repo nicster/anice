@@ -12,7 +12,7 @@ from werkzeug import secure_filename
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from wtforms import Form, TextField, validators, FileField, SubmitField, HiddenField, ValidationError
+from wtforms import Form, TextField, validators, FileField, SubmitField, HiddenField, ValidationError, TextAreaField
 
 
 #configuration
@@ -41,8 +41,6 @@ engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)
 Session = sessionmaker(bind=engine)
 
 ses = Session()
-
-editing = False
 
 
 """engine = create_engine('mysql+mysqldb://root:blubbi@localhost/flaskr', pool_recycle=3600)"""
@@ -126,15 +124,14 @@ def logout():
 
 class Painting_Form(Form):
     title = TextField('Title', [validators.Required()])
-    description = TextField('Description', [validators.Required()])
+    description = TextAreaField('Description', [validators.Required()])
     filename = FileField('File')
     submit = SubmitField('Upload')
     hidden_id = HiddenField()
+    short_description = TextAreaField('Short Description', [validators.required()])
 
     def validate_filename(form, field):
         if field.data and not session['editing'] == 'True':
-            print 'blubberer'
-            print editing
             field.data = secure_filename(re.sub(r'[^()a-z0-9_.-]', '_', str(field.data).lower()))
             field.data = session['type_of'] + field.data
             validators.regexp(r'^[^/\\]\.%s$' % joined)
@@ -174,10 +171,12 @@ class Painting(Base):
     filename = Column(String, nullable=False)
     position = Column(Integer)
     type_of = Column(String)
+    short_description = Column(String)
 
-    def __init__(self, title, description, filename):
+    def __init__(self, title, short_description, description, filename):
         self.title = title
         self.description = description
+        self.short_description = short_description
         self.filename = filename
         self.type_of = session['type_of']
         max_position = ses.query(func.max(Painting.position)).one()[0]
@@ -216,7 +215,7 @@ Base.metadata.create_all(engine)
 
 @app.before_request
 def before_request():
-    print request.base_url
+    session['editing'] = False
     logged_in = request.cookies.get('logged_in')
     if logged_in and not session.get('logged_in'):
         session['logged_in'] = True
@@ -226,26 +225,20 @@ def before_request():
 def add_painting():
     try:
         form = Painting_Form(request.values)
-        print 'blubbi'
         if request.files.get('filename'):
             form.filename.process_data(request.files['filename'].filename)
-        print 'blubbi'
         print request.script_root + '/macros.html'
-        print 'blubbi'
         if form.validate():
-            print 'blubbi'
-            painting = Painting(form.title.data, form.description.data, form.filename.data)
+            painting = Painting(form.title.data, form.short_description.data, form.description.data, form.filename.data)
             painting.upload(request.files['filename'])
             ses.add(painting)
             ses.flush()
             return jsonify(status='success', \
                 content=render_template('ajax/add_painting.html', painting=painting))
         else:
-            print 'blubbi'
-            blubbi = str(json.dumps(form.errors))
-            print blubbi
             return jsonify(status='error', spec='form', content=json.dumps(form.errors))
     except Exception, e:
+        raise e
         return jsonify(status='error', content=e.message)
 
 
@@ -264,7 +257,6 @@ def editing_form():
 def edit_painting():
     try:
         session['editing'] = 'True'
-        print session['editing']
         painting = ses.query(Painting).filter(Painting.id == int(request.values['hidden_id'])).one()
         form = Painting_Form(request.values, obj=painting)
         if request.files.get('filename'):

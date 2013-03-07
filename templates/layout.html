@@ -32,6 +32,9 @@
                     <h1>ANICE GROSSENBACHER</h1>
                     <span>DESIGN & ART</span>
                 </div>
+                    {% if session.logged_in %}
+                 <a href="{{ url_for('logout') }}" style="position:absolute;top:50px;right:100px;">logout</a>
+                {% endif %}
             </a>
         </header>
        
@@ -45,22 +48,20 @@
         </div>
 
         <div class=metanav>
-    {% if not session.logged_in %}
-        <a href="{{ url_for('login') }}">log in</a>
-    {% else %}
-        <a href="{{ url_for('logout') }}">logout</a>
-    {% endif %}
+
     </div>
     {% for message in get_flashed_messages() %}
         <div class=flash>{{ message }}</div>
     {% endfor %}
-
-    <div id="main">
+    
+    <div id="wrapper">
 <div id="description_container">haaallo</div>
+<div id="main">
         {% block body %}
 
         {% endblock %}
     </div>
+</div>
 
         {% if session.logged_in %}
         <a href="{{ url_for('submit_changes', former_url=request.url) }}">submit</a>

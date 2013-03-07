@@ -1,17 +1,8 @@
 {% extends "layout.html" %}
 {% import 'macros.html' as macros %}
 {% block body %}
-<span>work</span>
 	{% if session.logged_in %}
-		<div class="add_painting_div" style='display:none' enctype=multipart/form-data>
-			<form id=add_painting_form>
-				<div>{{ form.title.label }} {{ form.title }}</div>
-				<div>{{ form.filename.label }} {{ form.filename }}</div>
-				<div>{{ form.description.label }} {{ form.description }}</div>
-				<div>{{ form.submit(class='submit_painting') }}</div>
-				<div>{{ form.hidden_id() }}</div>
-			</form>
-		</div>
+		{{ macros.add_painting(painting, form) }}
 		<div class='add_painting_button button_div_1 close_dialogs'></div>
 	{% endif %}
 	<ul id=paintings>
