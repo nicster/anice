@@ -48,7 +48,7 @@ ses = Session()
 
 @app.route('/')
 def index():
-    return redirect(url_for('work'))
+    return render_template('home.html')
 
 
 @app.route('/portfolio')

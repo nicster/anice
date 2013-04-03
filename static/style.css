@@ -45,6 +45,17 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 
 #contact-last  { margin-top: 30px; }
 
+#bureau_description {
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 32px;
+}
+
+#biography {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
 
 
 .button_div_1 {
@@ -143,7 +154,14 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 #paintings {
 	overflow: hidden;
 	list-style-type: none;
-	padding:0px;
+	padding: 0;
+}
+
+#new_paintings {
+	list-style-type: none;
+	padding: 0;
+	overflow: hidden;
+	border: solid #000 1px;
 }
 
 #wrapper {
