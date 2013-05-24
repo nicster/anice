@@ -6,6 +6,7 @@ from PIL import Image
 import os
 import re
 import json
+import datetime
 from json import JSONEncoder
 from sqlite3 import dbapi2 as sqlite
 from werkzeug import secure_filename
@@ -48,7 +49,12 @@ ses = Session()
 
 @app.route('/')
 def index():
-    return redirect('/portfolio')
+    paintings = ses.query(Painting).order_by(Painting.date.asc()).all();
+    if len(paintings) > 0 :
+        painting = paintings[0]
+    else :
+        painting = None
+    return render_template('home.html', site=6, painting=painting)
 
 
 @app.route('/portfolio')
@@ -184,6 +190,7 @@ class Painting(Base):
             max_position = 0
         print max_position
         self.position = max_position + 1
+        self.date  = datetime.datetime.now();
 
     def my_path(self):
         return os.path.join(IMAGE_FOLDER, self.filename)
@@ -233,6 +240,7 @@ def add_painting():
             painting.upload(request.files['filename'])
             ses.add(painting)
             ses.flush()
+            ses.commit()
             return jsonify(status='success', \
                 content=render_template('ajax/add_painting.html', painting=painting))
         else:
@@ -268,6 +276,7 @@ def edit_painting():
             if request.files.get('filename'):
                 painting.upload(request.files['filename'])
             ses.flush()
+            ses.commit()
             session['editing'] = 'False'
             return jsonify(status='success', \
                 content=render_template('ajax/edit_painting.html', painting=painting), \
@@ -286,6 +295,7 @@ def delete_painting():
         painting = ses.query(Painting).filter(Painting.id == int(request.form['image_id'])).one()
         ses.delete(painting)
         ses.flush()
+        ses.commit()
         return jsonify(status='success', image_id=painting.id)
     except Exception, e:
         return jsonify(status='error', content=e.message)
@@ -304,6 +314,7 @@ def update_paintings_order():
         for painting in paintings:
             painting.position = sorted_items.get(painting.id)
         ses.flush()
+        ses.commit()
         return jsonify(status='success')
     except Exception, e:
         return jsonify(status='error', content=e.message)
@@ -331,6 +342,7 @@ def add_post():
             post = Post(form.title.data, form.text.data)
             ses.add(post)
             ses.flush()
+            ses.commit()
             return jsonify(status='success', \
                 content=render_template('ajax/add_post.html', post=post))
         else:
@@ -358,6 +370,7 @@ def edit_post():
         if request.method == 'POST' and form.validate():
             form.populate_obj(post)
             ses.flush()
+            ses.commit()
             return jsonify(status='success',
                 content=render_template('ajax/edit_post.html', post=post),
                 post_id=post.id)
@@ -373,6 +386,7 @@ def delete_post():
         post = ses.query(Post).filter(Post.id == int(request.form['post_id'])).one()
         ses.delete(post)
         ses.flush()
+        ses.commit()
         return jsonify(status='success', post_id=post.id)
     except Exception, e:
         return jsonify(status='error', content=e.message)

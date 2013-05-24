@@ -1,15 +1,8 @@
 {% extends "layout.html" %}
 {% import 'macros.html' as macros %}
 {% block body %}
-    {% if session.logged_in %}
-        {{ macros.add_painting(painting, form) }}
-        <div class='add_painting_button button_div_1 close_dialogs'></div>
+	{% if painting != None %}
+    	<div id="big_painting" style="background-image:url({{ url_for('static', filename=painting.my_thumbnail_path()) }});"></div>
+    	<h2>{{ painting.title }} \ {{ painting.date.day }}.{{ painting.date.month }}.{{ painting.date.year }}
     {% endif %}
-    <ul id=paintings>
-    {% for painting in paintings %}
-        {{ macros.show_painting(painting, session.logged_in) }}
-    {% else %}
-        <li><em>Unbelievable. No entries so far</em>
-    {% endfor %}
-    </ul>
 {% endblock %}

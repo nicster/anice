@@ -55,18 +55,13 @@
     {% endfor %}
     
     <div id="wrapper">
-<div id="description_container">haaallo</div>
+<div id="description_container"></div>
 <div id="main">
         {% block body %}
 
         {% endblock %}
     </div>
 </div>
-
-        {% if session.logged_in %}
-        <a href="{{ url_for('submit_changes', former_url=request.url) }}">submit</a>
-        <a href="{{ url_for('revert_changes', former_url=request.url) }}">revert</a>
-        {% endif %}
 
         <footer>
             <div id="copyright">&copy; 2013</div>
