@@ -2,14 +2,7 @@
 {% import 'macros.html' as macros %}
 {% block body %}
 	{% if session.logged_in %}
-		<div class="add_post_div" style='display:none'>
-			<form id=add_post_form>
-				<div>{{ form.title.label }} {{ form.title }}</div>
-				<div>{{ form.text.label }} {{ form.text }}</div>
-				<div>{{ form.submit(class='submit_post') }}</div>
-				<div>{{ form.hidden_id() }}</div>
-			</form>
-		</div>
+		{{ macros.add_post(post, form) }}
 		<div class='add_post_button button_div_1 close_dialogs'></div>
 	{% endif %}
 	<ul id=posts>

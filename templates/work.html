@@ -5,7 +5,7 @@
 		{{ macros.add_painting(painting, form) }}
 		<div class='add_painting_button button_div_1 close_dialogs'></div>
 	{% endif %}
-	<ul id=new_paintings>
+	<ul id=paintings>
 	{% for painting in paintings %}
 		{{ macros.show_painting(painting, session.logged_in) }}
 	{% else %}

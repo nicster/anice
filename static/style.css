@@ -94,6 +94,8 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 .add_post_button {
 	background: url('img/Plus_b.png') no-repeat;
 	opacity:0.5;
+	bottom:0px;
+	left:50%;
 }
 
 .delete_painting_button:hover {
@@ -116,8 +118,8 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 }
 
 .image_container {
-	height:210px;
-	width:210px;
+	height:240px;
+	width:240px;
 	background-repeat: no-repeat;
 	background-position: center;
 	padding: 2px;
@@ -130,15 +132,16 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 .image_container a {
 	display:block;
 	opacity:0;
-	width:210px;
-	height:180px;
+	width:240px;
+	height:200px;
 	text-align:center;
 	padding-top:30px;
+	overflow:hidden;
 }
 
 .overlay {
-	height:210px;
-	width:210px;
+	height:240px;
+	width:240px;
 	background-color:white;
 	opacity:0;
 }
@@ -152,6 +155,12 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 }
 
 #paintings {
+	overflow: hidden;
+	list-style-type: none;
+	padding: 0;
+}
+
+#posts {
 	overflow: hidden;
 	list-style-type: none;
 	padding: 0;
@@ -177,12 +186,14 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	position:absolute;
 	left:-120px;
 	width:120px;
+	text-align: left;
+	overflow:hidden;
 }
 
 .ui-dialog {
 	background:white;
 	padding: 10px;
-	border-radius:8px;
+	border: 2px solid black;
 }
 
 .no-close .ui-dialog-titlebar-close {

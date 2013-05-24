@@ -48,7 +48,7 @@ ses = Session()
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    return redirect('/portfolio')
 
 
 @app.route('/portfolio')
@@ -141,7 +141,7 @@ class Painting_Form(Form):
 
 class Post_Form(Form):
     title = TextField('Title', [validators.Required()])
-    text = TextField('Text', [validators.Required()])
+    text = TextAreaField('Text', [validators.Required()])
     submit = SubmitField('Upload')
     hidden_id = HiddenField()
 
