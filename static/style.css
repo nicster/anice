@@ -187,8 +187,8 @@ footer {
 
 #description_container {
 	position:absolute;
-	left:-120px;
-	width:120px;
+	left:-150px;
+	width:140px;
 	text-align: left;
 	overflow:hidden;
 }

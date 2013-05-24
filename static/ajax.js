@@ -7,7 +7,7 @@ function show_form_errors(form_errors, form){
 	for (var key in form_errors) {
 		console.log(key);
 		console.log(form_errors[key]);
-		$('.' + form + ' label[for='+key+']').after('<span style="color:red;"> '+form_errors[key]+'</span>');
+		$('.ui-dialog .' + form + ' label[for='+key+']').after('<span style="color:red;"> '+form_errors[key]+'</span>');
 	}
 }
 
