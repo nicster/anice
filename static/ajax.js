@@ -2,12 +2,12 @@ function close_dialogs(){
 	$('.future_dialog').dialog('close');
 }
 
-function show_form_errors(form_errors){
+function show_form_errors(form_errors, form){
 	form_errors = $.parseJSON(form_errors);
 	for (var key in form_errors) {
 		console.log(key);
 		console.log(form_errors[key]);
-		$('label[for='+key+']').after('<span style="color:red;"> '+form_errors[key]+'</span>');
+		$('.' + form + ' label[for='+key+']').after('<span style="color:red;"> '+form_errors[key]+'</span>');
 	}
 }
 
@@ -33,7 +33,7 @@ $(function(){
 				console.log(responseText);
 				if (responseText.status == "error"){
 					if (responseText.spec == "form"){
-						show_form_errors(responseText.content);
+						show_form_errors(responseText.content, 'add_painting_div');
 					}
 					else{
 						show_message(responseText.content, true);
@@ -56,7 +56,12 @@ $(function(){
 			},
 			success: function(responseText, statusText, xhr, $form){
 				if (responseText.status == "error"){
-					show_message(responseText.content, true);
+					if (responseText.spec == "form"){
+						show_form_errors(responseText.content, 'edit_painting_div');
+					}
+					else{
+						show_message(responseText.content, true);
+					}
 				}
 				else {
 					var painting_to_edit = $('.image_container[image_id=' + responseText.image_id + ']');

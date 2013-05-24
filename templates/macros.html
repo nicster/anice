@@ -21,6 +21,7 @@
 		<div class="add_painting_div" style='display:none' enctype=multipart/form-data>
 			<form id=add_painting_form>
 				<div>{{ form.title.label }}<br />{{ form.title }}</div>
+				<div>{{ form.media.label }}<br />{{ form.media }}</div>
 				<div>{{ form.filename.label }}<br />{{ form.filename }}</div>
 				<div>{{ form.short_description.label }}<br />{{ form.short_description }}</div>
 				<div>{{ form.description.label }}<br />{{ form.description }}</div>
@@ -37,7 +38,7 @@
 		<div class='delete_painting_button button_div_1 _close_dialogs' image_id={{ painting.id }}></div>
 		{% else %}
 		<div class="overlay">
-		<a class=show_description_link image_id={{ painting.id }}>{{ painting.short_description }}</a>
+		<a class=show_description_link image_id={{ painting.id }}>{{ painting.short_description }} <br /><br /> {{ painting.media }}</a>
 	</div>
 		{% endif %}
 	</li>
@@ -48,8 +49,9 @@
 	<form enctype=multipart/form-data>
 		<div>{{ form.hidden_id(value=painting.id) }}
 		<div>{{ form.title.label }} {{ form.title(value=painting.title) }}</div>
-		<div>{{ form.short_description.label }} {{ form.short_description(default=painting.short_description) }}</div>
-		<div>{{ form.description.label }} {{ form.description(default=painting.description) }}</div>
+		<div>{{ form.media.label }} {{ form.media(value=painting.media) }}</div>
+		<div>{{ form.short_description.label }} <textarea id="short_description" name="short_description">{{ painting.short_description }}</textarea></div>
+		<div>{{ form.description.label }} <textarea id="description" name="description">{{ painting.description }}</textarea></div>
 		<div>{{ form.filename.label }} {{ form.filename }}</div>
 		<div><img src="{{ url_for('static', filename=painting.my_thumbnail_path()) }}" /></div>
 		<div>{{ form.submit(class='edit_painting') }}</div>

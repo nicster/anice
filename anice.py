@@ -132,6 +132,7 @@ class Painting_Form(Form):
     title = TextField('Title', [validators.Required()])
     description = TextAreaField('Description', [validators.Required()])
     filename = FileField('File')
+    media = TextField('Media', [validators.Required()])
     submit = SubmitField('Upload')
     hidden_id = HiddenField()
     short_description = TextAreaField('Short Description', [validators.required()])
@@ -178,12 +179,14 @@ class Painting(Base):
     position = Column(Integer)
     type_of = Column(String)
     short_description = Column(String)
+    media = Column(String)
 
-    def __init__(self, title, short_description, description, filename):
+    def __init__(self, title, media, short_description, description, filename):
         self.title = title
         self.description = description
         self.short_description = short_description
         self.filename = filename
+        self.media = media
         self.type_of = session['type_of']
         max_position = ses.query(func.max(Painting.position)).one()[0]
         if not max_position:
@@ -236,7 +239,7 @@ def add_painting():
             form.filename.process_data(request.files['filename'].filename)
         print request.script_root + '/macros.html'
         if form.validate():
-            painting = Painting(form.title.data, form.short_description.data, form.description.data, form.filename.data)
+            painting = Painting(form.title.data, form.media.data, form.short_description.data, form.description.data, form.filename.data)
             painting.upload(request.files['filename'])
             ses.add(painting)
             ses.flush()

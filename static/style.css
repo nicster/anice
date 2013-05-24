@@ -135,7 +135,7 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	width:240px;
 	height:200px;
 	text-align:center;
-	padding-top:30px;
+	padding-top:40px;
 	overflow:hidden;
 }
 
@@ -232,7 +232,7 @@ form div {
 
 #big_painting {
 	height:500px; 
-	width: 700px;
+	width: 780px;
 	background-repeat: no-repeat;
 	background-position: center;
 	margin:20px auto;
