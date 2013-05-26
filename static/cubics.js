@@ -9,17 +9,17 @@ function draw_cubic(k) {
     var offset_y = 5;
     var change_width = 4;
 
-    var cds = [[59 + offset_x, 0 + offset_y], [118 + offset_x, 25 + offset_y],
-               [59 + offset_x, 50 + offset_y], [0 + offset_x, 25 + offset_y],
-               [59 + offset_x, 68 + offset_y], [118 + offset_x, 93 + offset_y],
-               [59 + offset_x, 118 + offset_y], [0 + offset_x, 93 + offset_y]];
+    var cds = [[59 + offset_x, 0 + offset_y], [118 + offset_x, 34 + offset_y],
+               [59 + offset_x, 68 + offset_y], [0 + offset_x, 34 + offset_y],
+               [59 + offset_x, 68 + offset_y], [118 + offset_x, 102 + offset_y],
+               [59 + offset_x, 136 + offset_y], [0 + offset_x, 102 + offset_y]];
 
-    var clr = [[cds[0], cds[1], cds[5], cds[4], 'rgba(234, 0, 1, 0.7)'],
-                [cds[3], cds[0], cds[4], cds[7], 'rgba(132, 206, 208, 0.7)'],
-                [cds[3], cds[2], cds[6], cds[7], 'rgba(255, 236, 71, 0.7)'], 
-                [cds[1], cds[2], cds[6], cds[5], 'rgba(247, 171, 202, 0.7)'],
-                [cds[4], cds[5], cds[6], cds[7], 'rgba(236, 214, 193, 0.7)'], 
-                [cds[0], cds[1], cds[2], cds[3], 'rgba(73, 72, 72, 0.7)']];
+    var clr = [[cds[0], cds[1], cds[5], cds[4], 'rgba(234, 0, 1, 1)'],
+                [cds[3], cds[0], cds[4], cds[7], 'rgba(132, 206, 208, 1)'],
+                [cds[3], cds[2], cds[6], cds[7], 'rgba(255, 236, 71, 1)'], 
+                [cds[1], cds[2], cds[6], cds[5], 'rgba(247, 171, 202, 1)'],
+                [cds[4], cds[5], cds[6], cds[7], 'rgba(236, 214, 193, 1)'], 
+                [cds[0], cds[1], cds[2], cds[3], 'rgba(73, 72, 72, 1)']];
 
     if (k === 0 || k == 1 || k == 4) {
         cxt.fillStyle = clr[k][4];

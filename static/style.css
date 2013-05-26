@@ -178,7 +178,7 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 }
 
 #main {
-	height:500px;
+	min-height:400px;
 }
 
 footer {

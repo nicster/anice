@@ -212,12 +212,15 @@ class Painting(Base):
         info = im.info
         if maximum > THUMBNAIL_SIZE[1]:
             im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
-        print 'blubbi'
         im.save('static/' + self.my_thumbnail_path(), **info)
 
     def delete_uploads(self):
-        os.remove('static/' + self.my_path())
-        os.remove('static/' + self.my_thumbnail_path())
+        try :
+            os.remove('static/' + self.my_path())
+            os.remove('static/' + self.my_thumbnail_path())
+            return True
+        except :
+            return False
 
 
 Base.metadata.create_all(engine)
@@ -296,6 +299,7 @@ def edit_painting():
 def delete_painting():
     try:
         painting = ses.query(Painting).filter(Painting.id == int(request.form['image_id'])).one()
+        painting.delete_uploads()
         ses.delete(painting)
         ses.flush()
         ses.commit()
