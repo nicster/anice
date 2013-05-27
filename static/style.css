@@ -3,7 +3,7 @@
     src: url(font/UniversLTStdCn.otf);
 }
 
-body           { font-family: 'Univers', san-serif; }
+body           { font-family: 'Univers', san-serif; width: 1200px; margin: 30px auto; }
 header         { text-align: center; margin-top: 30px;}
 h4             { margin-bottom: 5px; margin-top: 30px; font-size: 17px;}
 a              { text-decoration: none; }
