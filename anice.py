@@ -28,6 +28,7 @@ ALLOWED_EXTENSIONS = set(['jpg', 'png', 'jpeg', 'gif'])
 TYPE_OF_WORK = 'work'
 TYPE_OF_PORTFOLIO = 'portfolio'
 TYPE_OF_SKETCHES = 'sketches'
+TYPE_OF_BLOG = 'blog'
 joined = '|'.join(ALLOWED_EXTENSIONS)
 
 #create application
@@ -49,6 +50,7 @@ ses = Session()
 
 @app.route('/')
 def index():
+    session['former_page'] = 'index'
     paintings = ses.query(Painting).order_by(Painting.date.asc()).all();
     if len(paintings) > 0 :
         painting = paintings[0]
@@ -59,6 +61,7 @@ def index():
 
 @app.route('/portfolio')
 def portfolio():
+    session['former_page'] = 'portfolio'
     session['type_of'] = TYPE_OF_PORTFOLIO
     form = Painting_Form(request.form)
     paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).order_by(Painting.position.asc()).all()
@@ -67,6 +70,7 @@ def portfolio():
 
 @app.route('/work')
 def work():
+    session['former_page'] = 'work'
     session['type_of'] = TYPE_OF_WORK
     form = Painting_Form(request.form)
     paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).order_by(Painting.position.asc()).all()
@@ -75,6 +79,7 @@ def work():
 
 @app.route('/sketches')
 def sketches():
+    session['former_page'] = 'sketches'
     session['type_of'] = TYPE_OF_SKETCHES
     form = Painting_Form(request.form)
     paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).order_by(Painting.position.asc()).all()
@@ -83,18 +88,27 @@ def sketches():
 
 @app.route('/blog')
 def blog():
+    """
     form = Post_Form(request.form)
     posts = ses.query(Post).all()
     return render_template('blog.html', site=3, form=form, posts=posts)
+    """
+    session['former_page'] = 'blog'
+    session['type_of'] = TYPE_OF_BLOG
+    form = Painting_Form(request.form)
+    paintings = ses.query(Painting).filter(Painting.type_of == session['type_of']).order_by(Painting.position.asc()).all()
+    return render_template('sketches.html', site=3, form=form, paintings=paintings)
 
 
 @app.route('/about')
 def about():
+    session['former_page'] = 'about'
     return render_template('about.html', site=4)
 
 
 @app.route('/contact')
 def contact():
+    session['former_page'] = 'contact'
     return render_template('contact.html', site=5)
 
 
@@ -113,7 +127,10 @@ def login():
         else:
             session['logged_in'] = True
             flash('You successfully logged in')
-            response = make_response(redirect(url_for('work')))
+            if session['former_page'] :
+                response = make_response(redirect(url_for(session['former_page'])))
+            else :
+                response = make_response(redirect(url_for(String('work'))))
             response.set_cookie('logged_in', True)
             return response
     return render_template('login.html', error=error)
@@ -122,7 +139,10 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
-    response = make_response(redirect(url_for('work')))
+    if session['former_page'] :
+        response = make_response(redirect(url_for(session['former_page'])))
+    else :
+        response = make_response(redirect(url_for(String('work'))))
     response.set_cookie('logged_in', '')
     flash('You were logged out')
     return response
@@ -215,12 +235,16 @@ class Painting(Base):
         im.save('static/' + self.my_thumbnail_path(), **info)
 
     def delete_uploads(self):
+        value = 0
         try :
             os.remove('static/' + self.my_path())
-            os.remove('static/' + self.my_thumbnail_path())
-            return True
         except :
-            return False
+            value += 1
+        try : 
+            os.remove('static/' + self.my_thumbnail_path())
+        except :
+            value += 1
+        return (value == 0)
 
 
 Base.metadata.create_all(engine)
