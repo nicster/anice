@@ -4,10 +4,11 @@ function close_dialogs(){
 
 function show_form_errors(form_errors, form){
 	form_errors = $.parseJSON(form_errors);
+	$('.validation_error').remove();
 	for (var key in form_errors) {
 		console.log(key);
 		console.log(form_errors[key]);
-		$('.ui-dialog .' + form + ' label[for='+key+']').after('<span style="color:red;"> '+form_errors[key]+'</span>');
+		$('.ui-dialog .' + form + ' label[for='+key+']').after('<span class="validation_error" style="color:red;"> '+form_errors[key]+'</span>');
 	}
 }
 
