@@ -7,6 +7,7 @@ import os
 import re
 import json
 import datetime
+import hashlib
 from json import JSONEncoder
 from sqlite3 import dbapi2 as sqlite
 from werkzeug import secure_filename
@@ -29,6 +30,7 @@ TYPE_OF_WORK = 'work'
 TYPE_OF_PORTFOLIO = 'portfolio'
 TYPE_OF_SKETCHES = 'sketches'
 TYPE_OF_BLOG = 'blog'
+COOKIE_CONTENT = hashlib.sha224(USERNAME + ":!blubbediblubb1337").hexdigest()
 joined = '|'.join(ALLOWED_EXTENSIONS)
 
 #create application
@@ -131,7 +133,7 @@ def login():
                 response = make_response(redirect(url_for(session['former_page'])))
             else :
                 response = make_response(redirect(url_for(String('work'))))
-            response.set_cookie('logged_in', True)
+            response.set_cookie('logged_in', COOKIE_CONTENT)
             return response
     return render_template('login.html', error=error)
 
@@ -143,7 +145,7 @@ def logout():
         response = make_response(redirect(url_for(session['former_page'])))
     else :
         response = make_response(redirect(url_for(String('work'))))
-    response.set_cookie('logged_in', '')
+    response.set_cookie('logged_in', '0')
     flash('You were logged out')
     return response
 
@@ -254,7 +256,7 @@ Base.metadata.create_all(engine)
 def before_request():
     session['editing'] = False
     logged_in = request.cookies.get('logged_in')
-    if logged_in and not session.get('logged_in'):
+    if logged_in == COOKIE_CONTENT and not session.get('logged_in'):
         session['logged_in'] = True
 
 
@@ -436,4 +438,4 @@ def revert_changes(former_url):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
