@@ -195,7 +195,7 @@ class Painting(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime())
     title = Column(String(100), nullable=False)
-    description = Column(String, nullable=False)
+    description = Column(String(1000), nullable=False)
     filename = Column(String(100), nullable=False)
     position = Column(Integer)
     type_of = Column(String(1000))
