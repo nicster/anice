@@ -179,9 +179,9 @@ class Post(Base):
 
     id = Column(Integer, primary_key=True)
     date = Column(DateTime)
-    title = Column(String, nullable=False)
-    text = Column(String, nullable=False)
-    type_of = Column(String)
+    title = Column(String(100), nullable=False)
+    text = Column(String(1000), nullable=False)
+    type_of = Column(String(1000))
 
     def __init__(self, title, text):
         self.title = title
@@ -194,13 +194,13 @@ class Painting(Base):
 
     id = Column(Integer, primary_key=True)
     date = Column(DateTime())
-    title = Column(String, nullable=False)
+    title = Column(String(100), nullable=False)
     description = Column(String, nullable=False)
-    filename = Column(String, nullable=False)
+    filename = Column(String(100), nullable=False)
     position = Column(Integer)
-    type_of = Column(String)
-    short_description = Column(String)
-    media = Column(String)
+    type_of = Column(String(1000))
+    short_description = Column(String(1000))
+    media = Column(String(100))
 
     def __init__(self, title, media, short_description, description, filename):
         self.title = title
