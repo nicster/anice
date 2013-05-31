@@ -223,7 +223,7 @@ class Painting(Base):
         return THUMBNAIL_FOLDER + '/' + self.filename
 
     def upload(self, file):
-        file.save('static/' + self.my_path())
+        file.save(url_for('static', filename=self.my_path()))
         self.create_thumbnail()
 
     def create_thumbnail(self):
@@ -233,7 +233,7 @@ class Painting(Base):
         info = im.info
         if maximum > THUMBNAIL_SIZE[1]:
             im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
-        im.save('static/' + self.my_thumbnail_path(), **info)
+        im.save(url_for('static' , filename=self.my_thumbnail_path()), **info)
 
     def delete_uploads(self):
         value = 0
