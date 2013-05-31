@@ -40,7 +40,8 @@ app.config.from_object(__name__)
 
 Base = declarative_base()
 
-engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)
+engine = create_engine('sqlite+pysqlite:///anice.db', echo=True, module=sqlite)
+"""engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost/anice', pool_recycle=3600)"""
 
 Session = sessionmaker(bind=engine)
 
@@ -220,7 +221,7 @@ class Painting(Base):
     def my_path(self):
         return os.path.join(IMAGE_FOLDER, self.filename)
 
-    def my_thumbnail_path(self):
+    def my_thumbn ail_path(self):
         return THUMBNAIL_FOLDER + '/' + self.filename
 
     def upload(self, file):
