@@ -8,7 +8,6 @@ import re
 import json
 import datetime
 from json import JSONEncoder
-from sqlite3 import dbapi2 as sqlite
 from werkzeug import secure_filename
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, func
 from sqlalchemy.orm import sessionmaker
@@ -23,7 +22,7 @@ USERNAME = 'admin'
 PASSWORD = 'anice'
 THUMBNAIL_SIZE = 200, 200
 IMAGE_FOLDER = 'uploads'
-THUMBNAIL_FOLDER = 'uploads/thumbnails'
+THUMBNAIL_FOLDER = 'thumbnails'
 ALLOWED_EXTENSIONS = set(['jpg', 'png', 'jpeg', 'gif'])
 TYPE_OF_WORK = 'work'
 TYPE_OF_PORTFOLIO = 'portfolio'
@@ -220,29 +219,29 @@ class Painting(Base):
         return os.path.join(IMAGE_FOLDER, self.filename)
 
     def my_thumbnail_path(self):
-        return THUMBNAIL_FOLDER + '/' + self.filename
+        return os.path.join(IMAGE_FOLDER, THUMBNAIL_FOLDER, self.filename)
 
     def upload(self, file):
-        file.save(url_for('static', filename=self.my_path()))
+        file.save(os.path.join(app.instance_path, IMAGE_FOLDER, self.my_path()))
         self.create_thumbnail()
 
     def create_thumbnail(self):
-        im = Image.open('static/' + self.my_path())
+        im = Image.open(os.path.join(app.instance_path, IMAGE_FOLDER, self.my_path()))
         height, width = im.size
         maximum = max(height, width)
         info = im.info
         if maximum > THUMBNAIL_SIZE[1]:
             im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
-        im.save(url_for('static' , filename=self.my_thumbnail_path()), **info)
+        im.save(os.path.join(app.instance_path, IMAGE_FOLDER, THUMBNAIL_FOLDER, self.my_path()), **info)
 
     def delete_uploads(self):
         value = 0
         try :
-            os.remove('static/' + self.my_path())
+            os.remove(os.path.join(app.instance_path, IMAGE_FOLDER, self.my_path()))
         except :
             value += 1
         try : 
-            os.remove('static/' + self.my_thumbnail_path())
+            os.remove(os.path.join(app.instance_path, IMAGE_FOLDER, THUMBNAIL_FOLDER, self.my_path()))
         except :
             value += 1
         return (value == 0)
