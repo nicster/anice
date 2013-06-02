@@ -34,6 +34,8 @@ joined = '|'.join(ALLOWED_EXTENSIONS)
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+if not os.path.exists(os.path.join(app.instance_path, 'uploads/thumbnails')) :
+    os.makedirs(os.path.join(app.instance_path, 'uploads/thumbnails'), 0755)
 
 Base = declarative_base()
 
