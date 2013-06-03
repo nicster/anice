@@ -1,12 +1,13 @@
 #all the imports
 from __future__ import with_statement
 from flask import Flask, render_template, request, flash, session, redirect, \
-    url_for, jsonify, make_response
+    url_for, jsonify, make_response, Blueprint
 from PIL import Image
 import os
 import re
 import json
 import datetime
+from sqlite3 import dbapi2 as sqlite
 from json import JSONEncoder
 from werkzeug import secure_filename
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, func
@@ -34,20 +35,20 @@ joined = '|'.join(ALLOWED_EXTENSIONS)
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+instance = Blueprint("instance", __name__, static_folder=os.path.join(app.instance_path, "uploads"))
+app.register_blueprint(instance)
+
 if not os.path.exists(os.path.join(app.instance_path, 'uploads/thumbnails')) :
     os.makedirs(os.path.join(app.instance_path, 'uploads/thumbnails'), 0755)
 
 Base = declarative_base()
 
-"""engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)"""
-engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/hessiboy_anice', pool_recycle=3600)
+engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)
+"""engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/hessiboy_anice', pool_recycle=3600)"""
 
 Session = sessionmaker(bind=engine)
 
 ses = Session()
-
-
-"""engine = create_engine('mysql+mysqldb://root:blubbi@localhost/flaskr', pool_recycle=3600)"""
 
 
 @app.route('/')
@@ -224,26 +225,26 @@ class Painting(Base):
         return os.path.join(app.instance_path, IMAGE_FOLDER, THUMBNAIL_FOLDER, self.filename)
 
     def upload(self, file):
-        file.save(os.path.join(app.instance_path, IMAGE_FOLDER, self.my_path()))
+        file.save(self.my_path())
         self.create_thumbnail()
 
     def create_thumbnail(self):
-        im = Image.open(os.path.join(app.instance_path, IMAGE_FOLDER, self.my_path()))
+        im = Image.open(self.my_path())
         height, width = im.size
         maximum = max(height, width)
         info = im.info
         if maximum > THUMBNAIL_SIZE[1]:
             im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
-        im.save(os.path.join(app.instance_path, IMAGE_FOLDER, THUMBNAIL_FOLDER, self.my_path()), **info)
+        im.save(self.my_thumbnail_path(), **info)
 
     def delete_uploads(self):
         value = 0
         try :
-            os.remove(os.path.join(app.instance_path, IMAGE_FOLDER, self.my_path()))
+            os.remove(self.my_path())
         except :
             value += 1
         try : 
-            os.remove(os.path.join(app.instance_path, IMAGE_FOLDER, THUMBNAIL_FOLDER, self.my_path()))
+            os.remove(self.my_thumbnail_path())
         except :
             value += 1
         return (value == 0)
