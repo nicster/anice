@@ -43,8 +43,8 @@ if not os.path.exists(os.path.join(app.instance_path, 'uploads/thumbnails')) :
 
 Base = declarative_base()
 
-engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)
-"""engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/hessiboy_anice', pool_recycle=3600)"""
+"""engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)"""
+engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/hessiboy_anice', pool_recycle=3600)
 
 Session = sessionmaker(bind=engine)
 
