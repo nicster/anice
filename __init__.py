@@ -218,10 +218,10 @@ class Painting(Base):
         self.date  = datetime.datetime.now();
 
     def my_path(self):
-        return os.path.join(IMAGE_FOLDER, self.filename)
+        return os.path.join(app.instance_path, IMAGE_FOLDER, self.filename)
 
     def my_thumbnail_path(self):
-        return os.path.join(IMAGE_FOLDER, THUMBNAIL_FOLDER, self.filename)
+        return os.path.join(app.instance_path, IMAGE_FOLDER, THUMBNAIL_FOLDER, self.filename)
 
     def upload(self, file):
         file.save(os.path.join(app.instance_path, IMAGE_FOLDER, self.my_path()))

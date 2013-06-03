@@ -32,7 +32,7 @@
 {% endmacro %}
 
 {% macro show_painting(painting, logged_in=false) -%}
-	<li class="image_container" image_id="{{ painting.id }}" sort_id="image_{{ painting.id }}" style="background-image:url({{ url_for('instance.static', filename=painting.my_thumbnail_path()) }});">
+	<li class="image_container" image_id="{{ painting.id }}" sort_id="image_{{ painting.id }}" style="background-image:url({{ painting.my_thumbnail_path() }});">
 		{% if logged_in == true %}
 		<div class='edit_painting_button button_div_1 close_dialogs' image_id={{ painting.id }}></div>
 		<div class='delete_painting_button button_div_1 _close_dialogs' image_id={{ painting.id }}></div>
@@ -53,7 +53,7 @@
 		<div>{{ form.short_description.label }} <textarea id="short_description" name="short_description">{{ painting.short_description }}</textarea></div>
 		<div>{{ form.description.label }} <textarea id="description" name="description">{{ painting.description }}</textarea></div>
 		<div>{{ form.filename.label }} {{ form.filename }}</div>
-		<div><img src="{{ url_for('instance.static', filename=painting.my_thumbnail_path()) }}" /></div>
+		<div><img src="{{ painting.my_thumbnail_path() }}" /></div>
 		<div>{{ form.submit(class='edit_painting') }}</div>
 	</div>
 {%- endmacro %}
