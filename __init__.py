@@ -22,8 +22,10 @@ DEBUG = True
 SECRET_KEY = 'anice'
 USERNAME = 'admin'
 PASSWORD = 'anice'
-THUMBNAIL_SIZE = 200, 200
-IMAGE_FOLDER = 'uploads'
+THUMBNAIL_SIZE = 210, 210
+IMAGE_SIZE = 760, 480
+UPLOAD_FOLDER = 'uploads'
+IMAGE_FOLDER = 'images'
 THUMBNAIL_FOLDER = 'thumbnails'
 ALLOWED_EXTENSIONS = set(['jpg', 'png', 'jpeg', 'gif'])
 TYPE_OF_WORK = 'work'
@@ -39,8 +41,8 @@ app.config.from_object(__name__)
 instance = Blueprint("instance", __name__, static_folder=os.path.join(app.instance_path, "uploads"))
 app.register_blueprint(instance)
 
-if not os.path.exists(os.path.join(app.instance_path, 'uploads/thumbnails')) :
-    os.makedirs(os.path.join(app.instance_path, 'uploads/thumbnails'), 0755)
+if not os.path.exists(os.path.join(app.instance_path, 'uploads/images/thumbnails')) :
+    os.makedirs(os.path.join(app.instance_path, 'uploads/images/thumbnails'), 0755)
 
 Base = declarative_base()
 
@@ -220,20 +222,27 @@ class Painting(Base):
         self.date  = int(time.time());
 
     def my_path(self):
-        return os.path.join(app.instance_path, IMAGE_FOLDER, self.filename)
+        return os.path.join(app.instance_path, UPLOAD_FOLDER, self.filename)
+
+    def my_image_path(self):
+        return os.path.join(app.instance_path, UPLOAD_FOLDER, IMAGE_FOLDER, self.filename)
 
     def my_thumbnail_path(self):
-        return os.path.join(app.instance_path, IMAGE_FOLDER, THUMBNAIL_FOLDER, self.filename)
+        return os.path.join(app.instance_path, UPLOAD_FOLDER, IMAGE_FOLDER, THUMBNAIL_FOLDER, self.filename)
 
     def my_path_filename(self):
         return self.filename
 
+    def my_image_path_filename(self):
+        return os.path.join(IMAGE_FOLDER, self.filename)
+
     def my_thumbnail_path_filename(self):
-        return os.path.join(THUMBNAIL_FOLDER, self.filename)
+        return os.path.join(IMAGE_FOLDER, THUMBNAIL_FOLDER, self.filename)
 
     def upload(self, file):
         file.save(self.my_path())
         self.create_thumbnail()
+        self.create_image()
 
     def create_thumbnail(self):
         im = Image.open(self.my_path())
@@ -244,6 +253,14 @@ class Painting(Base):
             im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
         im.save(self.my_thumbnail_path(), **info)
 
+    def create_image(self):
+        im = Image.open(self.my_path())
+        height, width = im.size
+        info = im.info
+        if height > IMAGE_SIZE[1] or width > IMAGE_SIZE[0]:
+            im.thumbnail(IMAGE_SIZE, Image.ANTIALIAS)
+        im.save(self.my_image_path(), **info)
+
     def delete_uploads(self):
         value = 0
         try :
@@ -252,6 +269,10 @@ class Painting(Base):
             value += 1
         try : 
             os.remove(self.my_thumbnail_path())
+        except :
+            value += 1
+        try : 
+            os.remove(self.my_image_path())
         except :
             value += 1
         return (value == 0)
