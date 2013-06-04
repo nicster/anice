@@ -7,6 +7,7 @@ import os
 import re
 import json
 import datetime
+from datetime import date
 import time
 from sqlite3 import dbapi2 as sqlite
 from json import JSONEncoder
@@ -15,6 +16,7 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from wtforms import Form, TextField, validators, FileField, SubmitField, HiddenField, ValidationError, TextAreaField
+from functools import wraps
 
 
 #configuration
@@ -46,12 +48,21 @@ if not os.path.exists(os.path.join(app.instance_path, 'uploads/images/thumbnails
 
 Base = declarative_base()
 
-"""engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)"""
-engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/hessiboy_anice', pool_recycle=3600)
+engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)
+"""engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/hessiboy_anice', pool_recycle=3600)"""
 
 Session = sessionmaker(bind=engine)
 
 ses = Session()
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session['logged_in'] == None :
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/')
@@ -221,6 +232,9 @@ class Painting(Base):
         self.position = max_position + 1
         self.date  = int(time.time());
 
+    def date_formatted(self):
+        return date.fromtimestamp(self.date).strftime("%d.%m.%y")
+
     def my_path(self):
         return os.path.join(app.instance_path, UPLOAD_FOLDER, self.filename)
 
@@ -290,6 +304,7 @@ def before_request():
 
 
 @app.route('/ajax/add_painting', methods=['GET', 'POST'])
+@login_required
 def add_painting():
     try:
         form = Painting_Form(request.values)
@@ -312,6 +327,7 @@ def add_painting():
 
 
 @app.route('/ajax/editing_form', methods=['GET', 'POST'])
+@login_required
 def editing_form():
     try:
         form = Painting_Form()
@@ -323,6 +339,7 @@ def editing_form():
 
 
 @app.route('/ajax/edit_painting', methods=['GET', 'POST'])
+@login_required
 def edit_painting():
     try:
         session['editing'] = 'True'
@@ -351,6 +368,7 @@ def edit_painting():
 
 
 @app.route('/ajax/delete_painting', methods=['POST'])
+@login_required
 def delete_painting():
     try:
         painting = ses.query(Painting).filter(Painting.id == int(request.form['image_id'])).one()
@@ -364,6 +382,7 @@ def delete_painting():
 
 
 @app.route('/ajax/update_paintings_order', methods=['POST'])
+@login_required
 def update_paintings_order():
     try:
         sort_list = request.form.getlist('image[]', type=int)
@@ -383,6 +402,7 @@ def update_paintings_order():
 
 
 @app.route('/ajax/get_description', methods=['POST'])
+@login_required
 def get_description():
     try:
         painting = ses.query(Painting).filter(Painting.id == int(request.form['image_id'])).one()
@@ -397,6 +417,7 @@ def get_description():
 
 
 @app.route('/ajax/add_post', methods=['GET', 'POST'])
+@login_required
 def add_post():
     try:
         form = Post_Form(request.values)
@@ -414,6 +435,7 @@ def add_post():
 
 
 @app.route('/ajax/editing_post_form', methods=['GET', 'POST'])
+@login_required
 def editing_post_form():
     try:
         form = Post_Form()
@@ -425,6 +447,7 @@ def editing_post_form():
 
 
 @app.route('/ajax/edit_post', methods=['GET', 'POST'])
+@login_required
 def edit_post():
     try:
         post = ses.query(Post).filter(Post.id == int(request.values['hidden_id'])).one()
@@ -443,6 +466,7 @@ def edit_post():
 
 
 @app.route('/ajax/delete_post', methods=['POST'])
+@login_required
 def delete_post():
     try:
         post = ses.query(Post).filter(Post.id == int(request.form['post_id'])).one()
@@ -455,12 +479,14 @@ def delete_post():
 
 
 @app.route('/submit_changes/<path:former_url>', methods=['POST', 'GET'])
+@login_required
 def submit_changes(former_url):
     ses.commit()
     return redirect(former_url)
 
 
 @app.route('/revert_changes/<path:former_url>', methods=['POST', 'GET'])
+@login_required
 def revert_changes(former_url):
     ses.rollback()
     return redirect(former_url)

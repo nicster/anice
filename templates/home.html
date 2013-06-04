@@ -3,6 +3,6 @@
 {% block body %}
 	{% if painting != None %}
     	<div id="big_painting" style="background-image:url({{ url_for('instance.static', filename=painting.my_image_path_filename()) }});"></div>
-    	<h2>{{ painting.title }} \ {{ painting.date.day }}.{{ painting.date.month }}.{{ painting.date.year }}
+    	<h2>{{ painting.title }} \ {{ painting.date_formatted() }}
     {% endif %}
 {% endblock %}
