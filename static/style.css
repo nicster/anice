@@ -135,8 +135,9 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 	width:240px;
 	height:200px;
 	text-align:center;
-	padding-top:40px;
+	padding-top:80px;
 	overflow:hidden;
+	font-size: 19px;
 }
 
 .overlay {

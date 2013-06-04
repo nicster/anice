@@ -48,8 +48,8 @@ if not os.path.exists(os.path.join(app.instance_path, 'uploads/images/thumbnails
 
 Base = declarative_base()
 
-engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)
-"""engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/hessiboy_anice', pool_recycle=3600)"""
+"""engine = create_engine('sqlite+pysqlite:///flaskr.db', echo=True, module=sqlite)"""
+engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/hessiboy_anice', pool_recycle=3600)
 
 Session = sessionmaker(bind=engine)
 
@@ -230,10 +230,11 @@ class Painting(Base):
             max_position = 0
         print max_position
         self.position = max_position + 1
-        self.date  = int(time.time());
+        self.date = time.time();
 
     def date_formatted(self):
-        return date.fromtimestamp(self.date).strftime("%d.%m.%y")
+        blubbi = date.fromtimestamp(int(self.date))
+        return blubbi.strftime("%d.%m.%y")
 
     def my_path(self):
         return os.path.join(app.instance_path, UPLOAD_FOLDER, self.filename)
