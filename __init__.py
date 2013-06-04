@@ -17,6 +17,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from wtforms import Form, TextField, validators, FileField, SubmitField, HiddenField, ValidationError, TextAreaField
 from functools import wraps
+import jinja2htmlcompress
 
 
 #configuration
@@ -43,6 +44,8 @@ app.config.from_object(__name__)
 instance = Blueprint("instance", __name__, static_folder=os.path.join(app.instance_path, "uploads"))
 app.register_blueprint(instance)
 
+app.jinja_env.add_extension(jinja2htmlcompress.HTMLCompress)
+
 if not os.path.exists(os.path.join(app.instance_path, 'uploads/images/thumbnails')) :
     os.makedirs(os.path.join(app.instance_path, 'uploads/images/thumbnails'), 0755)
 
@@ -54,6 +57,14 @@ engine = create_engine('mysql+mysqldb://hessiboy:Roll1679Stuhl@localhost:3306/he
 Session = sessionmaker(bind=engine)
 
 ses = Session()
+
+
+"""@app.after_request
+def modify_response(response):
+    data = response.data
+    mod_data = re.sub('/\s+/', ' ', data)
+    response.data = re.sub('/>\s</', '><', mod_data)
+    return response"""
 
 
 def login_required(f):
