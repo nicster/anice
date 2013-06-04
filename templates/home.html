@@ -2,7 +2,7 @@
 {% import 'macros.html' as macros %}
 {% block body %}
 	{% if painting != None %}
-    	<div id="big_painting" style="background-image:url({{ url_for('static', filename=painting.my_thumbnail_path()) }});"></div>
+    	<div id="big_painting" style="background-image:url({{ url_for('instance.static', filename=painting.my_thumbnail_path_filename()) }});"></div>
     	<h2>{{ painting.title }} \ {{ painting.date.day }}.{{ painting.date.month }}.{{ painting.date.year }}
     {% endif %}
 {% endblock %}

@@ -7,6 +7,7 @@ import os
 import re
 import json
 import datetime
+import time
 from sqlite3 import dbapi2 as sqlite
 from json import JSONEncoder
 from werkzeug import secure_filename
@@ -54,7 +55,7 @@ ses = Session()
 @app.route('/')
 def index():
     session['former_page'] = 'index'
-    paintings = ses.query(Painting).order_by(Painting.date.asc()).all();
+    paintings = ses.query(Painting).order_by(Painting.date.desc()).all();
     if len(paintings) > 0 :
         painting = paintings[0]
     else :
@@ -195,7 +196,7 @@ class Painting(Base):
     __tablename__ = 'art_gallery'
 
     id = Column(Integer, primary_key=True)
-    date = Column(DateTime())
+    date = Column(Integer)
     title = Column(String(100), nullable=False)
     description = Column(String(1000), nullable=False)
     filename = Column(String(100), nullable=False)
@@ -216,7 +217,7 @@ class Painting(Base):
             max_position = 0
         print max_position
         self.position = max_position + 1
-        self.date  = datetime.datetime.now();
+        self.date  = int(time.time());
 
     def my_path(self):
         return os.path.join(app.instance_path, IMAGE_FOLDER, self.filename)

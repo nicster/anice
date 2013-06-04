@@ -80,7 +80,7 @@ hr             { width: 20px; border-color: #000; display: inline-block;
 .add_painting_button {
 	background: url('img/Plus_b.png') no-repeat;
 	opacity:0.5;
-	bottom:0px;
+	bottom:-40px;
 	left:50%;
 }
 .delete_post_button {
