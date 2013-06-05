@@ -155,10 +155,10 @@ def login():
         else:
             session['logged_in'] = True
             flash('You successfully logged in')
-            if session['former_page'] :
+            if 'former_page' in session :
                 response = make_response(redirect(url_for(session['former_page'])))
             else :
-                response = make_response(redirect(url_for(String('work'))))
+                response = make_response(redirect(url_for('work')))
             response.set_cookie('logged_in', True)
             return response
     return render_template('login.html', error=error)
