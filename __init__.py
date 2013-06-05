@@ -6,7 +6,6 @@ from PIL import Image
 import os
 import re
 import json
-import datetime
 from datetime import date
 import time
 from sqlite3 import dbapi2 as sqlite
